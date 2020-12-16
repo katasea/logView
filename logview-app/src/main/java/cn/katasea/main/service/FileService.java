@@ -13,4 +13,5 @@ import java.util.Map;
  */
 public interface FileService {
 	List<FileBean> getFileList(RequestVO<Map<String,Object>> requestVO) throws PayBusinessException;
+	String getFileContent(RequestVO<Map<String,Object>> requestVO) throws Exception;
 }

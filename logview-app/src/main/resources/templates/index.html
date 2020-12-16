@@ -21,7 +21,7 @@
     <nav class="navbar navbar-expand-lg fixed-top bg-info " color-on-scroll="1">
         <div class="container">
             <div class="navbar-translate">
-                <a class="navbar-brand" href="#" rel="tooltip" title="" data-placement="bottom" target="_blank" data-original-title="Designed and Coded by Creative Tim">
+                <a class="navbar-brand" th:href="@{/}"  rel="tooltip" title="" data-placement="bottom" target="_blank" data-original-title="返回查看文件目录信息">
                     <span>Log•</span> View System
                 </a>
                 <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,6 +93,7 @@
                             <h2 class="card-title">文件浏览</h2>
                         </div>
                         <div class="card-body" style="height: 400px;">
+                            <h5 class="text-left current-path">当前路径：</h5>
                             <ul id="fileViewUl" class="nav nav-pills nav-pills-primary nav-pills-icons">
 <!--                                <li class="nav-item">-->
 <!--                                    <a class="nav-link" data-toggle="tab" href="#link7">-->
@@ -118,24 +119,17 @@
                                 <i class="tim-icons icon-minimal-left"></i>
                                 上级
                             </a>
-                            <a href="javascript:void(0)" class="btn btn-info btn-round ">
-                                <i class="tim-icons icon-cloud-download-93"></i>
-                                下载
-                            </a>
-                            <a href="javascript:void(0)" class="btn btn-info btn-round ">
-                                <i class="tim-icons icon-cloud-download-93"></i>
-                                上传
-                            </a>
-                            <a href="javascript:void(0)" class="btn btn-info btn-round " data-toggle="modal" data-target="#myModal">
-                                <i class="tim-icons icon-cloud-download-93"></i>
-                                命令行
-                            </a>
+<!--                            <a href="javascript:void(0)" class="btn btn-info btn-round ">-->
+<!--                                <i class="tim-icons icon-cloud-download-93"></i>-->
+<!--                                下载-->
+<!--                            </a>-->
+<!--                            <a href="javascript:void(0)" class="btn btn-info btn-round ">-->
+<!--                                <i class="tim-icons icon-cloud-download-93"></i>-->
+<!--                                上传-->
+<!--                            </a>-->
+
                         </div>
                     </div>
-
-
-
-
 
                 </div>
             </div>
@@ -144,26 +138,7 @@
 
         </div>
     </div>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header justify-content-center">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        <i class="tim-icons icon-simple-remove"></i>
-                    </button>
-                    <h4 class="title title-up">Modal title</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean. A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default">Nice Button</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <script th:src="@{/js/core/jquery.min.js}"></script>
     <script th:src="@{/js/core/popper.min.js}"></script>
     <script th:src="@{/js/core/bootstrap.min.js}"></script>
@@ -184,6 +159,7 @@
         $(function(){
             getFilesDirectory('',0);
             $(".card-body").slimScroll({ height: 400,wheelStep: 10});
+            $(".modal-body").slimScroll({ height: 500,wheelStep: 10});
         });
 
         function getFilesDirectory(parentDir,ftype) {
@@ -193,11 +169,12 @@
             if(paramPath!='' && paramPath.indexOf("/")==-1) {
                 paramPath = paramPath + "/";
             }
+            $('.current-path').html("当前路径："+paramPath);
             var params = {"parentDir":paramPath};
             if(ftype == 0) {
                 $.ajax(
                     {
-                        url: getRootPath() +'api/gateway.do',
+                        url: getRootPath() +'/api/gateway.do',
                         type:'post',
                         dateType:'json',
                         headers:{'Content-Type':'application/json;charset=utf8'},
@@ -216,15 +193,25 @@
                                         var file = files[i];
                                         var classStr = '';
                                         var classStr2 = '';
+                                        var actionContent = '';
                                         if(file.type === 0) {
                                             classStr = 'icon-tv-2';
                                             classStr2 = 'badge-danger';
+                                            actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(\''+file.dir+'\',\''+file.type+'\');" ';
                                         }else {
                                             classStr = 'icon-single-copy-04';
                                             classStr2 = 'badge-success';
+                                            if(file.name.indexOf(".log")!=-1
+                                                ||file.name.indexOf(".xml")!=-1
+                                                ||file.name.indexOf(".txt")!=-1) {
+                                                actionContent = 'href="'+getRootPath()+'/view?path='+file.dir+'"';
+                                            }else {
+                                                actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(\''+file.dir+'\',\''+file.type+'\');" ';
+                                            }
                                         }
+
                                         var content = '<li class="nav-item">\n' +
-                                            '        <a class="nav-link " href="javascript:void(0);"  onclick="getFilesDirectory(\''+file.dir+'\',\''+file.type+'\');\" \n' +
+                                            '        <a class="nav-link " '+actionContent+'\n' +
                                             '           data-toggle="tooltip" data-placement="bottom" title="总容量: '+file.totalSpace+'M 空闲: '+file.freeSpace+'M 文件大小: '+file.usedSpace+'" >'+
                                             '           <i class="tim-icons '+classStr+'"></i> <span class="badge '+classStr2+'">'+file.name+'</span>' +
                                             '          </a>\n' +
@@ -268,14 +255,13 @@
         function getRootPath() {
             var strFullPath = window.document.location.href;
             var strPath = document.location.pathname;
-            if (strPath == null || strPath == '/') {
-                return strFullPath;
-            } else {
-                var pos = strFullPath.indexOf(strPath);
-                var prePath = strFullPath.substring(0, pos);
-                // var postPath = strPath.substring(0,strPath.substring(1).indexOf("/")+1);
-                return prePath+strPath;
+            if(strPath.lastIndexOf("/") != strPath.indexOf("/")) {
+                strPath = strPath.substring(0,strPath.lastIndexOf("/"));
             }
+            var pos = strFullPath.indexOf(strPath);
+            var prePath = strFullPath.substring(0, pos);
+            // var postPath = strPath.substring(0,strPath.substring(1).indexOf("/")+1);
+            return prePath+strPath;
         }
     </script>
 </body>

@@ -4,10 +4,11 @@ import cn.katasea.bean.po.FileBean;
 import cn.katasea.bean.vo.RequestVO;
 import cn.katasea.exception.PayBusinessException;
 import cn.katasea.main.service.FileService;
+import cn.katasea.main.service.util.EncodeUtils;
 import cn.katasea.util.CommonUtil;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,5 +69,36 @@ public class FileServiceImpl implements FileService {
 			throw new PayBusinessException("未获取相关入参，入参为空！");
 		}
 		return childResult;
+	}
+
+	@Override
+	public String getFileContent(RequestVO<Map<String, Object>> requestVO) throws Exception {
+		Map<String,Object> params = requestVO.getBizObj();
+		String fileUrl = String.valueOf(params.get("filePath"));
+		String encodeType = null;
+		File file = new File(fileUrl);
+		InputStream is = null;
+		BufferedReader br = null;
+		try {
+			encodeType = EncodeUtils.getEncode(fileUrl, true);
+			is = new FileInputStream(file);
+			br = new BufferedReader(new InputStreamReader(is,encodeType));
+			StringBuffer sb = new StringBuffer();
+			String line = "";
+			while ((line = br.readLine()) != null){
+				sb.append(line+"\r\n");
+			}
+			return new String(sb.toString().getBytes());
+		}catch (Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}finally {
+			if(null != br) {
+				br.close();
+			}
+			if(null != is) {
+				is.close();
+			}
+		}
 	}
 }

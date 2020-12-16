@@ -8,3 +8,5 @@ file:
   service:
     getFileList:
       V1.0: {"bean":"fileServiceImpl","method":"getFileList"}
+    getFileContent:
+      V1.0: {"bean":"fileServiceImpl","method":"getFileContent"}
