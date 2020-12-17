@@ -1,40 +1,38 @@
-﻿# BaseFramework
+﻿# LogView
 
 
-项目简介
+建设目标
 ---------
-提供一个整合完的框架。下载即可开始开发。<br>
-1、springboot2.x+ssm+jpa+swagger2+aoplog+auto create table [MYSQL]
+- [x] 1、浏览应用所在服务器目录<br>
+- [x] 2、下载任意文件<br>
+- [ ] 3、上传任意文件<br>
+- [x] 4、查看日志文件并支持检索<br>
+- [ ] 5、在线修改相关配置文件<br>
+- [ ] 6、在线执行cmd或shell脚本【启动远程服务等】<br>
+- [ ] 7、支持多应用合并服务器信息，统一管理<br>
+- [x] 8、简易部署，简易配置。<br>
 
-2、提供统一接口，调用sdk，含加解密验签功能。 
 
-3、提供Redis缓存集成和Redis分布式锁工具类。
-
-//TODO<br>
-1、目前是jpa自动建表，维护表结构还需改进，或者自行引入liquibase建表<br>
-
-2、目前是单应用，可以改造为dubbo多应用<br>
-
-3、可以考虑整合mq/quartz/线程池等。<br>
-
-功能特性
----------
 
 环境依赖
 ---------
 JDK1.8+
 
+
 部署步骤
 ---------
-下载版本的jar包。启动命令
-<br>
-```java 
-java -jar 编译后的JAR.jar [-Dfile.encoding=utf-8 乱码情况下使用]
-     --spring.datasource.username=数据库用户 默认sa
-     --spring.datasource.password=数据库密码 默认123
-     --druid.loginUsername=Druid登陆用户名 默认slo
-     --druid.loginPassword=Druid登陆密码 默认slo
+- 下载代码 使用maven打包 找个目录放以下文件 这里采用lib包分离模式，方便后续更新
+```java
+mvn package -Dmaven.test.skip=true
 ```
+- 拷贝config文件夹 并修改配置文件端口，可以不用改。
+- 拷贝app/target/lib  app/target/logview-app-*.jar.original
+- 写个脚本启动  java -jar logview-app-*.jar.original
+```jshelllanguage
+title 电子票据接口平台 
+java -Xmx256M -Xms256M -jar -Dfile.encoding=gbk -Dloader.path=./config;./lib  logview-app-v1.0.0.jar.original
+```
+- 访问 http://localhost:8000/logView
 
 
 声明
@@ -43,6 +41,6 @@ java -jar 编译后的JAR.jar [-Dfile.encoding=utf-8 乱码情况下使用]
 
 协议
 ---------
-GPLv3
+不知道啥协议，反正随便用
 
 

@@ -179,7 +179,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>cn.business.BaseFrameworkApplication</mainClass>
+                            <mainClass>cn.katasea.logviewApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
