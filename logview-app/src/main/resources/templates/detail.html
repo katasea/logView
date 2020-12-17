@@ -18,10 +18,10 @@
     <!-- Optional: page related CSS-->
 </head>
 <body class="index-page">
-<nav class="navbar navbar-expand-lg fixed-top bg-info " color-on-scroll="1">
+<nav class="navbar navbar-expand-lg fixed-top bg-info">
     <div class="container">
         <div class="navbar-translate">
-            <a class="navbar-brand" th:href="@{/}" rel="tooltip" title="" data-placement="bottom" target="_blank" data-original-title="返回查看文件目录信息">
+            <a class="navbar-brand" th:href="@{/}" rel="tooltip" title="" data-placement="bottom" target="_blank" data-original-title="新开一个窗口查看文件目录信息">
                 <span>Log•</span> View System
             </a>
             <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,40 +47,38 @@
             </div>
             <ul class="navbar-nav">
 
-                <!--                    <li class="dropdown nav-item">-->
-                <!--                        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">-->
-                <!--                            <i class="fa fa-cogs d-lg-none d-xl-none"></i> Getting started-->
-                <!--                        </a>-->
-                <!--                        <div class="dropdown-menu dropdown-with-icons">-->
-                <!--                            <a href="https://demos.creative-tim.com/blk-design-system/docs/1.0/getting-started/overview.html" class="dropdown-item">-->
-                <!--                                <i class="tim-icons icon-paper"></i> Documentation-->
-                <!--                            </a>-->
-                <!--                            <a href="examples/register-page.html" class="dropdown-item">-->
-                <!--                                <i class="tim-icons icon-bullet-list-67"></i>Register Page-->
-                <!--                            </a>-->
-                <!--                            <a href="examples/landing-page.html" class="dropdown-item">-->
-                <!--                                <i class="tim-icons icon-image-02"></i>Landing Page-->
-                <!--                            </a>-->
-                <!--                            <a href="examples/profile-page.html" class="dropdown-item">-->
-                <!--                                <i class="tim-icons icon-single-02"></i>Profile Page-->
-                <!--                            </a>-->
-                <!--                        </div>-->
-                <!--                    </li>-->
-                <!--                    <li class="nav-item">-->
-                <!--                        <a class="nav-link btn btn-default d-none d-lg-block" href="javascript:void(0)" onclick="scrollToDownload()">-->
-                <!--                            <i class="tim-icons icon-cloud-download-93"></i> Download-->
-                <!--                        </a>-->
-                <!--                    </li>-->
             </ul>
         </div>
     </div>
 </nav>
 <div class="wrapper">
-    <div class="main " style="margin-top: 60px">
+    <div class="main " style="margin-top: 80px">
+        <div >
+
+                <div class="form-row">
+                    <div class="form-group  col-md-4">
+                        <div class="input-group" >
+                            <input type="text" class="form-control form-control-success" placeholder="搜索关键词">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="tim-icons icon-lock-circle"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group  col-md-4">
+                        <button class="btn btn-warning btn-sm search">检索</button>
+                        <button class="btn btn-primary btn-sm download">下载</button>
+                        <button class="btn btn-info btn-sm goback">上级目录</button>
+                    </div>
+                </div>
+
+
+        </div>
         <blockquote>
             <p class="blockquote blockquote-white " style="font-size: 11px;">
+                正在加载中...请稍候...
             </p>
         </blockquote>
+
     </div>
 </div>
 
@@ -103,7 +101,21 @@
     var signType = "Plain";
     $(function(){
         getFileLog(path);
-        $(".blockquote").slimScroll({ allowPageScroll:1,height: 600,wheelStep: 6,distance: "2px",opacity: 0.8, color: "#FFF",alwaysVisible:1});
+        $(".blockquote").slimScroll({ allowPageScroll:1,height: 580,wheelStep: 6,distance: "2px",opacity: 0.8, color: "#FFF",alwaysVisible:1});
+        $(".download").click(function () {
+            window.location.href = getRootPath()+"/file/download?path="+path;
+        });
+
+        $(".goback").click(function () {
+            var tempPath = path;
+            if(tempPath.charAt(tempPath.length-1) == '/') {
+                tempPath = "";
+            }else{
+                tempPath = tempPath.substring(0,tempPath.lastIndexOf("/"));
+            }
+           window.location.href = getRootPath()+"/index?path="+tempPath;
+        });
+
     });
 
     function getFileLog(path) {

@@ -21,7 +21,7 @@
     <nav class="navbar navbar-expand-lg fixed-top bg-info " color-on-scroll="1">
         <div class="container">
             <div class="navbar-translate">
-                <a class="navbar-brand" th:href="@{/}"  rel="tooltip" title="" data-placement="bottom" target="_blank" data-original-title="返回查看文件目录信息">
+                <a class="navbar-brand" th:href="@{/}"  rel="tooltip" title="" data-placement="bottom" target="_blank" data-original-title="新开一个窗口查看文件目录信息">
                     <span>Log•</span> View System
                 </a>
                 <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,9 +115,21 @@
                             </ul>
                         </div>
                         <div class="card-footer">
-                            <a href="javascript:void(0)" class="btn btn-info btn-round " onclick="goBackParent()">
-                                <i class="tim-icons icon-minimal-left"></i>
+                            <a href="javascript:void(0)" class="btn btn-info btn-sm btn-round " onclick="goBackParent()">
+                                <i class="tim-icons icon-double-left"></i>
                                 上级
+                            </a>
+                            <a href="javascript:void(0)" class="btn btn-primary btn-sm btn-round download">
+                                <i class="tim-icons icon-cloud-download-93"></i>
+                                下载
+                            </a>
+                            <a href="javascript:void(0)" class="btn btn-success btn-sm btn-round upload">
+                                <i class="tim-icons icon-cloud-upload-94"></i>
+                                上传
+                            </a>
+                            <a href="javascript:void(0)" class="btn btn-warning btn-sm btn-round shell">
+                                <i class="tim-icons icon-triangle-right-17"></i>
+                                命令
                             </a>
 <!--                            <a href="javascript:void(0)" class="btn btn-info btn-round ">-->
 <!--                                <i class="tim-icons icon-cloud-download-93"></i>-->
@@ -155,11 +167,27 @@
         var appid = "1A3VL0KVK0000B020A0A0000CC3F48AD";
         var encryptType = "Plain";
         var signType = "Plain";
-        var currentPath = '';
+        var currentPath = getUrlParam("path");
+        var filePath = '';
         $(function(){
-            getFilesDirectory('',0);
+            getFilesDirectory(currentPath,0);
             $(".card-body").slimScroll({ height: 400,wheelStep: 10});
             $(".modal-body").slimScroll({ height: 500,wheelStep: 10});
+            $(".download").click(function () {
+                if(filePath.indexOf(".")!=-1) {
+
+                    window.location.href = getRootPath()+"/file/download?path="+filePath;
+                } else {
+                    alert("不是一个文件,无法下载");
+                }
+            });
+            $(".upload").click(function () {
+                alert('等待实现');
+            });
+            $(".shell").click(function () {
+                alert('等待实现');
+            });
+
         });
 
         function getFilesDirectory(parentDir,ftype) {
@@ -170,6 +198,7 @@
                 paramPath = paramPath + "/";
             }
             $('.current-path').html("当前路径："+paramPath);
+            filePath = paramPath;
             var params = {"parentDir":paramPath};
             if(ftype == 0) {
                 $.ajax(
@@ -201,9 +230,11 @@
                                         }else {
                                             classStr = 'icon-single-copy-04';
                                             classStr2 = 'badge-success';
-                                            if(file.name.indexOf(".log")!=-1
-                                                ||file.name.indexOf(".xml")!=-1
-                                                ||file.name.indexOf(".txt")!=-1) {
+                                            if(file.name.toUpperCase().indexOf(".LOG")!=-1
+                                                ||file.name.toUpperCase().indexOf(".XML")!=-1
+                                                ||file.name.toUpperCase().indexOf(".TXT")!=-1
+                                                ||file.name.toUpperCase().indexOf(".BAT")!=-1
+                                                ||file.name.toUpperCase().indexOf(".SH")!=-1) {
                                                 actionContent = 'href="'+getRootPath()+'/view?path='+file.dir+'"';
                                             }else {
                                                 actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(\''+file.dir+'\',\''+file.type+'\');" ';
@@ -251,7 +282,18 @@
             };
             return fparams;
         }
-
+        function getUrlParam (name) {
+            var reg = new RegExp('(^|&)' + name + '=(.*)(&[^&=]+=)');
+            var regLast = new RegExp('(^|&)' + name + '=(.*)($)');
+            var r = window.location.search.substr(1).match(reg) || window.location.search.substr(1).match(regLast);
+            if (r != null) {
+                var l = r[2].match(/&[^&=]+=/)
+                if (l) {
+                    return decodeURIComponent(r[2].split(l[0])[0]);
+                } else return decodeURIComponent(r[2]);
+            }
+            return '';
+        }
         function getRootPath() {
             var strFullPath = window.document.location.href;
             var strPath = document.location.pathname;
