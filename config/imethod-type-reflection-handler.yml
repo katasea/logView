@@ -1,12 +1,8 @@
-test:
-  service:
-    forfun:
-      DEFAULT.1.0: {"bean":"testSrvImpl","method":"testService"}
-    getUser:
-      DEFAULT.1.0: {"bean":"testSrvImpl","method":"testUserRepository"}
 file:
   service:
     getFileList:
       V1.0: {"bean":"fileServiceImpl","method":"getFileList"}
     getFileContent:
       V1.0: {"bean":"fileServiceImpl","method":"getFileContent"}
+    modifyFile:
+      V1.0: {"bean":"fileServiceImpl","method":"modifyFile"}

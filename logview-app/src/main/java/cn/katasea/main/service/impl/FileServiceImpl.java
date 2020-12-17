@@ -6,6 +6,7 @@ import cn.katasea.exception.PayBusinessException;
 import cn.katasea.main.service.FileService;
 import cn.katasea.main.service.util.EncodeUtils;
 import cn.katasea.util.CommonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -18,6 +19,7 @@ import java.util.Map;
  * 2020/12/9 16:39
  */
 @Service
+@Slf4j
 public class FileServiceImpl implements FileService {
 	@Override
 	public List<FileBean> getFileList(RequestVO<Map<String,Object>> requestVO) throws PayBusinessException {
@@ -99,6 +101,32 @@ public class FileServiceImpl implements FileService {
 			if(null != is) {
 				is.close();
 			}
+		}
+	}
+
+	@Override
+	public void modifyFile(RequestVO<Map<String, Object>> requestVO) throws Exception {
+		try {
+			Map<String,Object> params = requestVO.getBizObj();
+			String filePath = String.valueOf(params.get("filePath"));
+			String clob = String.valueOf(params.get("content"));
+			if (CommonUtil.isNotEmpty(clob)) {
+				clob = CommonUtil.uncompress(clob);
+				File file = new File(filePath);
+				if (!file.exists()) {
+					throw new FileNotFoundException();
+				}else {
+					PrintWriter out=new PrintWriter(file);
+					out.print(clob);
+					out.close();
+				}
+			}else {
+				throw new PayBusinessException("修改的文件内容不能为空！");
+			}
+
+		}catch (Exception e){
+			log.error("文件修改错误:{}",e.getMessage());
+			throw e;
 		}
 	}
 }

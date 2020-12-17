@@ -21,10 +21,12 @@
 <nav class="navbar navbar-expand-lg fixed-top bg-info">
     <div class="container">
         <div class="navbar-translate">
-            <a class="navbar-brand" th:href="@{/}" rel="tooltip" title="" data-placement="bottom" target="_blank" data-original-title="新开一个窗口查看文件目录信息">
+            <a class="navbar-brand" th:href="@{/}" rel="tooltip" title="" data-placement="bottom" target="_blank"
+               data-original-title="新开一个窗口查看文件目录信息">
                 <span>Log•</span> View System
             </a>
-            <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
+                    aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-bar bar1"></span>
                 <span class="navbar-toggler-bar bar2"></span>
                 <span class="navbar-toggler-bar bar3"></span>
@@ -39,7 +41,8 @@
                         </a>
                     </div>
                     <div class="col-6 collapse-close text-right">
-                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navigation"
+                                aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                             <i class="tim-icons icon-simple-remove"></i>
                         </button>
                     </div>
@@ -53,23 +56,24 @@
 </nav>
 <div class="wrapper">
     <div class="main " style="margin-top: 80px">
-        <div >
+        <div>
 
-                <div class="form-row">
-                    <div class="form-group  col-md-4">
-                        <div class="input-group" >
-                            <input type="text" class="form-control form-control-success" placeholder="搜索关键词">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="tim-icons icon-lock-circle"></i></span>
-                            </div>
+            <div class="form-row">
+                <div class="form-group  col-md-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-success searchInputText"
+                               placeholder="输入关键词, 按<N>到下一个位置 按<B>到上一个位置">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="tim-icons icon-lock-circle"></i></span>
                         </div>
                     </div>
-                    <div class="form-group  col-md-4">
-                        <button class="btn btn-warning btn-sm search">检索</button>
-                        <button class="btn btn-primary btn-sm download">下载</button>
-                        <button class="btn btn-info btn-sm goback">上级目录</button>
-                    </div>
                 </div>
+                <div class="form-group  col-md-4">
+                    <button class="btn btn-warning btn-sm search">检索</button>
+                    <button class="btn btn-primary btn-sm download">下载</button>
+                    <button class="btn btn-info btn-sm goback">上级目录</button>
+                </div>
+            </div>
 
 
         </div>
@@ -88,59 +92,120 @@
 <!--    <script th:src="@{/js/plugins/perfect-scrollbar.jquery.min.js}"></script>-->
 <!--    <script th:src="@{/js/plugins/bootstrap-switch.js}"></script>-->
 <!--    <script th:src="@{/js/plugins/nouislider.min.js}"></script>-->
-<!--    <script th:src="@{/js/plugins/moment.min.js}"></script>-->
+<!--<script th:src="@{/js/plugins/jquery.quicksearch.js}"></script>-->
 <script th:src="@{/demo/demo.js}"></script>
 
 <!-- Theme JS -->
 <script th:src="@{/js/blk-design-system.js}"></script>
-<script th:src="@{/js/plugins/jquery.slimscroll.min.js}"></script>
+<!--<script th:src="@{/js/plugins/jquery.slimscroll.min.js}"></script>-->
 <script type="text/javascript">
-    var path =getUrlParam("path");
+    var path = getUrlParam("path");
     var appid = "1A3VL0KVK0000B020A0A0000CC3F48AD";
     var encryptType = "Plain";
     var signType = "Plain";
-    $(function(){
+    // var qs = $('.searchInputText').quicksearch('.blockquote');
+    $(function () {
+        //获取文件内容
         getFileLog(path);
-        $(".blockquote").slimScroll({ allowPageScroll:1,height: 580,wheelStep: 6,distance: "2px",opacity: 0.8, color: "#FFF",alwaysVisible:1});
+        //按钮事件监听
         $(".download").click(function () {
-            window.location.href = getRootPath()+"/file/download?path="+path;
+            window.location.href = getRootPath() + "/file/download?path=" + path;
+        });
+
+        $(".search").click(function () {
+            searchLogContent();
         });
 
         $(".goback").click(function () {
             var tempPath = path;
-            if(tempPath.charAt(tempPath.length-1) == '/') {
+            if (tempPath.charAt(tempPath.length - 1) == '/') {
                 tempPath = "";
-            }else{
-                tempPath = tempPath.substring(0,tempPath.lastIndexOf("/"));
+            } else {
+                tempPath = tempPath.substring(0, tempPath.lastIndexOf("/"));
             }
-           window.location.href = getRootPath()+"/index?path="+tempPath;
+            window.location.href = getRootPath() + "/index?path=" + tempPath;
         });
 
+        $(document).bind('keydown', function(event){
+
+            // console.log(event.keyCode);
+            if(event.keyCode === 78) {
+                scrollToResult(0);
+            }
+            if(event.keyCode === 66) {
+                scrollToResult(1);
+            }
+
+        });
+        // setScroll();
+        // $(window).on("resize",setScroll);
     });
+    function setScroll(){
+        $(".blockquote").slimScroll({
+            height: $(window).height()-155,
+            distance: "2px",
+            opacity: 0.8,
+            wheelStep: 1,
+            allowPageScroll: true,
+            color: "#FFF",
+            alwaysVisible:1
+        });
+    }
+
+    var i = 0;
+    function searchLogContent() {
+        var searchText = $(".searchInputText").val();
+        var content = $(".blockquote").html();
+        var regExp = new RegExp(searchText, 'g');
+        content = content.replace(regExp, '<span class="result" style="background:yellow;color:red;">' + searchText + '</span>');
+
+        $('.blockquote').html(content);
+        scrollToResult(0);
+    }
+    function scrollToResult(flag) {
+        var a = $('.result');
+        if(flag === 0) {
+            i++;
+        }else {
+            i--;
+        }
+        if(i<0) {
+            i=0;
+        }
+        var ai = a[i];
+        var X = ai.offsetTop-300;
+        var Y = ai.offsetLeft;
+        window.scroll(Y, X);
+
+    }
 
     function getFileLog(path) {
         var method = "file/service/getFileContent/V1.0";
-        var params = {"filePath":path};
-            $.ajax(
-                {
-                    url: getRootPath() +'/api/gateway.do',
-                    type:'post',
-                    dateType:'json',
-                    headers:{'Content-Type':'application/json;charset=utf8'},
-                    data:JSON.stringify(getGlobalParams(params,method)),
-                    success:function(data){
-                        if(data.retCode == '0000') {
-                            $(".blockquote").html(data.bizObj.replaceAll("\r\n","<br/>"));
-                        }else {
-                            $(".blockquote").html(data.retMsg);
-                        }
-                    },
-                    error:function(data){console.log("error");}
+        var params = {"filePath": path};
+        $.ajax(
+            {
+                url: getRootPath() + '/api/gateway.do',
+                type: 'post',
+                dateType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8'},
+                data: JSON.stringify(getGlobalParams(params, method)),
+                success: function (data) {
+                    if (data.retCode == '0000') {
+                        $(".blockquote").html(data.bizObj.replaceAll("\r\n", "<br/>"));
+                    } else {
+                        $(".blockquote").html(data.retMsg);
+                    }
+                    // qs.cache();
+                    // setScroll();
+                },
+                error: function (data) {
+                    console.log("error");
                 }
-            );
+            }
+        );
     }
 
-    function getUrlParam (name) {
+    function getUrlParam(name) {
         var reg = new RegExp('(^|&)' + name + '=(.*)(&[^&=]+=)');
         var regLast = new RegExp('(^|&)' + name + '=(.*)($)');
         var r = window.location.search.substr(1).match(reg) || window.location.search.substr(1).match(regLast);
@@ -154,7 +219,7 @@
     }
 
 
-    function getGlobalParams(params,method) {
+    function getGlobalParams(params, method) {
         var timestamp = (new Date()).valueOf();
         var fparams = {
             "appId": appid,
@@ -170,13 +235,13 @@
     function getRootPath() {
         var strFullPath = window.document.location.href;
         var strPath = document.location.pathname;
-        if(strPath.lastIndexOf("/") != strPath.indexOf("/")) {
-            strPath = strPath.substring(0,strPath.lastIndexOf("/"));
+        if (strPath.lastIndexOf("/") != strPath.indexOf("/")) {
+            strPath = strPath.substring(0, strPath.lastIndexOf("/"));
         }
         var pos = strFullPath.indexOf(strPath);
         var prePath = strFullPath.substring(0, pos);
         // var postPath = strPath.substring(0,strPath.substring(1).indexOf("/")+1);
-        return prePath+strPath;
+        return prePath + strPath;
     }
 </script>
 </body>

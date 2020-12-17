@@ -61,7 +61,22 @@
             <!--<onMismatch>DENY</onMismatch>-->
         </filter>
     </appender>
-
+    <appender name="ASYNC_FILEDEBUG" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>10000</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="FILEDEBUG"/>
+    </appender>
+    <appender name="ASYNC_FILEERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>10000</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="FILEERROR"/>
+    </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!--encoder 默认配置为PatternLayoutEncoder-->
         <encoder>
@@ -81,11 +96,11 @@
 
     <!-- 生产环境下，将此级别配置为适合的级别，以免日志文件太多或影响程序性能 -->
     <root level="INFO">
-        <appender-ref ref="FILEERROR" />
+        <appender-ref ref="ASYNC_FILEDEBUG" />
         <!--<appender-ref ref="FILEWARN" />-->
-        <appender-ref ref="FILEDEBUG" />
+        <appender-ref ref="ASYNC_FILEERROR" />
 
         <!-- 生产环境将请stdout,testfile去掉 -->
-        <appender-ref ref="STDOUT" />
+<!--        <appender-ref ref="STDOUT" />-->
     </root>
 </configuration>
