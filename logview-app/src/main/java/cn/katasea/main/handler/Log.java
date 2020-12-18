@@ -41,7 +41,7 @@ public class Log {
 
 	@RequestMapping(value = {"/",""})
 	public String indexForward(HttpServletRequest request) {
-		return "redirect:/index";
+		return "redirect:/login";
 	}
 
 	@RequestMapping("/index")
