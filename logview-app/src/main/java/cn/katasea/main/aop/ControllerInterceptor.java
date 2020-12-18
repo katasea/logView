@@ -1,5 +1,6 @@
 package cn.katasea.main.aop;
 
+import com.alibaba.fastjson.JSONObject;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @Aspect
@@ -70,7 +72,6 @@ public class ControllerInterceptor {
 
 	@AfterReturning("webLog()")
 	public void doAfterReturning(JoinPoint joinPoint) {
-		// 处理完请求，返回内容
 	}
 
 

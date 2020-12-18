@@ -14801,7 +14801,7 @@ textarea.form-control:active, textarea.form-control:focus {
 .register-page .square-1 {
     height: 300px;
     width: 300px;
-    background-image: url(../../assets/img/square1.png);
+    background-image: url(../img/square1.png);
     top: 175px;
     right: 150px;
     opacity: .8
@@ -14810,7 +14810,7 @@ textarea.form-control:active, textarea.form-control:focus {
 .register-page .square-2 {
     height: 120px;
     width: 120px;
-    background-image: url(../../assets/img/square2.png);
+    background-image: url(../img/square2.png);
     opacity: .9;
     top: 310px;
     right: 390px
@@ -14819,7 +14819,7 @@ textarea.form-control:active, textarea.form-control:focus {
 .register-page .square-3 {
     width: 200px;
     height: 200px;
-    background-image: url(../../assets/img/square3.png);
+    background-image: url(../img/square3.png);
     opacity: .3;
     top: -50px;
     right: 400px
@@ -14828,7 +14828,7 @@ textarea.form-control:active, textarea.form-control:focus {
 .register-page .square-4 {
     height: 200px;
     width: 200px;
-    background-image: url(../../assets/img/square4.png);
+    background-image: url(../img/square4.png);
     right: -50px;
     top: 525px
 }
@@ -14842,7 +14842,7 @@ textarea.form-control:active, textarea.form-control:focus {
 }
 
 .register-page .square-5, .register-page .square-6 {
-    background-image: url(../../assets/img/square5.png)
+    background-image: url(../img/square5.png)
 }
 
 .register-page .square-6 {
@@ -14856,7 +14856,7 @@ textarea.form-control:active, textarea.form-control:focus {
 .register-page .square-7 {
     height: 200px;
     width: 200px;
-    background-image: url(../../assets/img/square5.png);
+    background-image: url(../img/square5.png);
     left: -100px;
     top: 100px;
     opacity: .4
@@ -15449,7 +15449,7 @@ hr.line-deafult {
 .section-signup .square-1 {
     height: 300px;
     width: 300px;
-    background-image: url(../../assets/img/square1.png);
+    background-image: url(../img/square1.png);
     top: 80px;
     left: 100px;
     opacity: .3;
@@ -15459,7 +15459,7 @@ hr.line-deafult {
 .section-signup .square-2 {
     height: 200px;
     width: 200px;
-    background: url(../../assets/img/square3.png);
+    background: url(../img/square3.png);
     background-size: cover;
     bottom: 40px;
     left: 600px;
@@ -15470,7 +15470,7 @@ hr.line-deafult {
 .section-signup .square-3 {
     height: 100px;
     width: 100px;
-    background: url(../../assets/img/square2.png);
+    background: url(../img/square2.png);
     background-size: cover;
     top: 300px;
     left: 700px;
@@ -15480,7 +15480,7 @@ hr.line-deafult {
 .section-signup .square-4 {
     height: 250px;
     width: 250px;
-    background: url(../../assets/img/square3.png);
+    background: url(../img/square3.png);
     background-size: cover;
     top: 0;
     right: 100px;

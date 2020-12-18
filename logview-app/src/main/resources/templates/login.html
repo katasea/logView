@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>
+        logView
+    </title>
+    <meta name="description" content="view">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
+
+    <!-- Icons -->
+    <link th:href="@{/css/nucleo-icons.css}" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link type="text/css" th:href="@{/css/blk-design-system.css}" rel="stylesheet">
+    <link type="text/css" th:href="@{/demo/demo.css}" rel="stylesheet">
+    <!-- Optional: page related CSS-->
+</head>
+<body class="index-page">
+        <div class="main">
+            <div class="section section-signup">
+                <div class="container">
+                    <div class="squares square-1"></div>
+                    <div class="squares square-2"></div>
+                    <div class="squares square-3"></div>
+                    <div class="squares square-4"></div>
+                    <div class="row row-grid justify-content-between align-items-center">
+                        <div class="col-lg-6">
+                            <h3 class="display-3 text-white">A Useful Black LogView
+                                <span class="text-white">Which Read Log and Manage Files</span>
+                            </h3>
+                            <p class="text-white mb-3">When people gather firewood, the flame is high,
+                                Looking forward to your joining and enriching the software function</p>
+                            <div class="btn-wrapper">
+                                <a href="https://github.com/katasea/logView" class="btn btn-info">关注 Github</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-lg-auto">
+                            <div class="card card-register">
+                                <div class="card-header">
+                                    <img class="card-img" th:src="@{/img/square1.png}" alt="Card image">
+                                    <h4 class="card-title text-info text-truncate-sm">LogView</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form class="form">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="tim-icons icon-single-02"></i>
+                                                </div>
+                                            </div>
+                                            <input type="text" id="userId" class="form-control" placeholder="请输入用户名">
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="tim-icons icon-lock-circle"></i>
+                                                </div>
+                                            </div>
+                                            <input type="password" id="password" class="form-control" placeholder="请输入机密密码">
+                                        </div>
+                                        <div class="form-check text-left">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" id="rememberMe" type="checkbox">
+                                                <span class="form-check-sign"></span>
+                                                记住账号密码
+                                                <a href="javascript:void(0)">请确保环境安全</a>.
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="card-footer ">
+                                    <a href="javascript:void(0)" id="submitBtn" disabled="disabled" class="btn btn-info btn-round btn-lg">启航</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/core/jquery.min.js}"></script>
+    <script th:src="@{/js/core/popper.min.js}"></script>
+    <script th:src="@{/js/core/bootstrap.min.js}"></script>
+<!--    <script th:src="@{/js/plugins/perfect-scrollbar.jquery.min.js}"></script>-->
+<!--    <script th:src="@{/js/plugins/bootstrap-switch.js}"></script>-->
+<!--    <script th:src="@{/js/plugins/nouislider.min.js}"></script>-->
+<!--    <script th:src="@{/js/plugins/moment.min.js}"></script>-->
+    <script th:src="@{/demo/demo.js}"></script>
+
+    <!-- Theme JS -->
+    <script th:src="@{/js/blk-design-system.js}"></script>
+    <script th:src="@{/js/plugins/jsencrypt.js}"></script>
+    <script th:src="@{/js/plugins/cookie.js}"></script>
+    <script type="text/javascript">
+        var publicKey = null;
+        $(document).ready(function () {
+            $.ajax({
+                url: getRootPath()+"/publicKey",
+                type: "post",
+                success: function(data) {
+                    var encrypt = new JSEncrypt();
+                    if(data){
+                        publicKey = data.bizObj;
+                        $("#submitBtn").removeAttr("disabled");
+                    }
+                    if(publicKey==null){
+                        alert("获取publicKey失败，请联系管理员！");
+                        return;
+                    }
+                }
+            });
+
+            var rememberFlag = getCookieValue("remember");
+            if(rememberFlag == 'on') {
+                $("#userId").val(getCookieValue('userId'));
+                $("#password").val(getCookieValue('password'));
+                $("#rememberMe").prop('checked',true);
+            }
+
+
+            $("#submitBtn").click(function(){
+                var encrypt = new JSEncrypt();
+                encrypt.setPublicKey(publicKey);
+                var userId = $("#userId").val();
+                var password = $("#password").val();
+                var en_userId = encrypt.encrypt(userId);
+                var en_password = encrypt.encrypt(password);
+                var remember = $('#rememberMe').val() === 'on';
+                if(remember) {
+                    setCookie('userId',userId,24,'/');
+                    setCookie('password',password,24,'/');
+                    setCookie('remember','on',24,'/');
+                }else {
+                    setCookie('remember','',24,'/');
+                }
+                var data = {
+                    "userId":en_userId,
+                    "password":en_password
+                };
+                // 提交用户名和密码给后台
+                $.ajax({
+                    url: getRootPath() + "/login",
+                    data: data,
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.retCode === '0000') {
+                            window.location.href = getRootPath()+"/index";
+                        }else {
+                            alert(data.retMsg);
+                        }
+                    }
+                });
+            });
+        });
+
+        //十六进制转字节
+        function hexToBytes(hex) {
+            for (var bytes = [], c = 0; c < hex.length; c += 2)
+                bytes.push(parseInt(hex.substr(c, 2), 16));
+            return bytes;
+        }
+
+        // 字节转十六进制
+        function bytesToHex(bytes) {
+            for (var hex = [], i = 0; i < bytes.length; i++) {
+                hex.push((bytes[i] >>> 4).toString(16));
+                hex.push((bytes[i] & 0xF).toString(16));
+            }
+            return hex.join("");
+        }
+
+        function getUrlParam (name) {
+            var reg = new RegExp('(^|&)' + name + '=(.*)(&[^&=]+=)');
+            var regLast = new RegExp('(^|&)' + name + '=(.*)($)');
+            var r = window.location.search.substr(1).match(reg) || window.location.search.substr(1).match(regLast);
+            if (r != null) {
+                var l = r[2].match(/&[^&=]+=/)
+                if (l) {
+                    return decodeURIComponent(r[2].split(l[0])[0]);
+                } else return decodeURIComponent(r[2]);
+            }
+            return '';
+        }
+        function getRootPath() {
+            var strFullPath = window.document.location.href;
+            var strPath = document.location.pathname;
+            if(strPath.lastIndexOf("/") != strPath.indexOf("/")) {
+                strPath = strPath.substring(0,strPath.lastIndexOf("/"));
+            }
+            var pos = strFullPath.indexOf(strPath);
+            var prePath = strFullPath.substring(0, pos);
+            // var postPath = strPath.substring(0,strPath.substring(1).indexOf("/")+1);
+            return prePath+strPath;
+        }
+    </script>
+</body>
+</html>

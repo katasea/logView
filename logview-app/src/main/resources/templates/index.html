@@ -66,11 +66,11 @@
 <!--                            </a>-->
 <!--                        </div>-->
 <!--                    </li>-->
-<!--                    <li class="nav-item">-->
-<!--                        <a class="nav-link btn btn-default d-none d-lg-block" href="javascript:void(0)" onclick="scrollToDownload()">-->
-<!--                            <i class="tim-icons icon-cloud-download-93"></i> Download-->
-<!--                        </a>-->
-<!--                    </li>-->
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-info d-none d-lg-block" href="javascript:void(0)" onclick="logout()">
+                            <i class="tim-icons icon-user-run"></i> 退出
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -92,7 +92,7 @@
 <!--                            <img class="card-img" th:src="@{/img/square1.png}" alt="Card image">-->
                             <h2 class="card-title">文件浏览</h2>
                         </div>
-                        <div class="card-body" style="height: 400px;">
+                        <div class="card-body" style="height: 440px;">
                             <h5 class="text-left current-path">当前路径：</h5>
                             <ul id="fileViewUl" class="nav nav-pills nav-pills-primary nav-pills-icons">
 <!--                                <li class="nav-item">-->
@@ -171,8 +171,7 @@
         var filePath = '';
         $(function(){
             getFilesDirectory(currentPath,0);
-            $(".card-body").slimScroll({ height: 400,wheelStep: 10});
-            $(".modal-body").slimScroll({ height: 500,wheelStep: 10});
+            $(".card-body").slimScroll({ height: 440,wheelStep: 10});
             $(".download").click(function () {
                 if(filePath.indexOf(".")!=-1) {
 
@@ -260,6 +259,21 @@
             }
         }
 
+        function logout() {
+            // 提交用户名和密码给后台
+            $.ajax({
+                url: getRootPath() + "/logout",
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if(data.retCode === '0000') {
+                        window.location.href = getRootPath()+"/login";
+                    }else {
+                        alert(data.retMsg);
+                    }
+                }
+            });
+        }
         function goBackParent() {
             var tempPath = currentPath;
             if(tempPath.charAt(tempPath.length-1) == '/') {

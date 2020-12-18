@@ -11,6 +11,7 @@ public enum HandlerType {
 
 	SUCCESS("0000", "处理成功"),
 	UNKNOWN("9999", "未知错误"),
+	NO_LOGIN("9998", "未登录"),
 
 	REQ_POST_TEXT_NULL("REQ_POST_TEXT_NULL", "请求报文为空！"),
 	REQ_POST_TEXT_ILLEGAL("REQ_POST_TEXT_ILLEGAL", "请求报文未按格式要求！"),

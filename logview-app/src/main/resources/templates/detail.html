@@ -126,13 +126,13 @@
             window.location.href = getRootPath() + "/index?path=" + tempPath;
         });
 
-        $(document).bind('keydown', function(event){
+        $(document).bind('keydown', function (event) {
 
             // console.log(event.keyCode);
-            if(event.keyCode === 78) {
+            if (event.keyCode === 78) {
                 scrollToResult(0);
             }
-            if(event.keyCode === 66) {
+            if (event.keyCode === 66) {
                 scrollToResult(1);
             }
 
@@ -140,19 +140,21 @@
         // setScroll();
         // $(window).on("resize",setScroll);
     });
-    function setScroll(){
+
+    function setScroll() {
         $(".blockquote").slimScroll({
-            height: $(window).height()-155,
+            height: $(window).height() - 155,
             distance: "2px",
             opacity: 0.8,
             wheelStep: 1,
             allowPageScroll: true,
             color: "#FFF",
-            alwaysVisible:1
+            alwaysVisible: 1
         });
     }
 
     var i = 0;
+
     function searchLogContent() {
         var searchText = $(".searchInputText").val();
         var content = $(".blockquote").html();
@@ -162,18 +164,22 @@
         $('.blockquote').html(content);
         scrollToResult(0);
     }
+
     function scrollToResult(flag) {
         var a = $('.result');
-        if(flag === 0) {
+        if (flag === 0) {
             i++;
-        }else {
+        } else {
             i--;
         }
-        if(i<0) {
-            i=0;
+        if (i < 0) {
+            i = 0;
+        }
+        if (i === a.length) {
+            i = 0;
         }
         var ai = a[i];
-        var X = ai.offsetTop-300;
+        var X = ai.offsetTop - 300;
         var Y = ai.offsetLeft;
         window.scroll(Y, X);
 
