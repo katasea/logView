@@ -171,6 +171,8 @@
 
     function scrollToResult(flag) {
         var a = $('.result');
+        a[i].style.background = 'yellow';
+        a[i].style.color = 'red';
         if (flag === 0) {
             i++;
         } else {
@@ -185,10 +187,6 @@
         var ai = a[i];
         var X = ai.offsetTop - 300;
         var Y = ai.offsetLeft -20;
-        if(i!=0){
-            a[i-1].style.background = 'yellow';
-            a[i-1].style.color = 'red';
-        }
         ai.style.background = 'orange';
         ai.style.color = 'black';
         window.scroll(Y, X);
