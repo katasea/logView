@@ -103,6 +103,7 @@
     var appid = "1A3VL0KVK0000B020A0A0000CC3F48AD";
     var encryptType = "Plain";
     var signType = "Plain";
+    var contentOriginal = '';
     // var qs = $('.searchInputText').quicksearch('.blockquote');
     $(function () {
         //获取文件内容
@@ -156,8 +157,11 @@
     var i = 0;
 
     function searchLogContent() {
+        var tagContent = '<span class="result" style="background:yellow;color:red;">';
         var searchText = $(".searchInputText").val();
-        var content = $(".blockquote").html();
+        var content = contentOriginal;
+
+        //清楚上次搜索结果
         var regExp = new RegExp(searchText, 'g');
         content = content.replace(regExp, '<span class="result" style="background:yellow;color:red;">' + searchText + '</span>');
 
@@ -180,7 +184,13 @@
         }
         var ai = a[i];
         var X = ai.offsetTop - 300;
-        var Y = ai.offsetLeft;
+        var Y = ai.offsetLeft -20;
+        if(i!=0){
+            a[i-1].style.background = 'yellow';
+            a[i-1].style.color = 'red';
+        }
+        ai.style.background = 'orange';
+        ai.style.color = 'black';
         window.scroll(Y, X);
 
     }
@@ -197,7 +207,8 @@
                 data: JSON.stringify(getGlobalParams(params, method)),
                 success: function (data) {
                     if (data.retCode == '0000') {
-                        $(".blockquote").html(data.bizObj.replaceAll("\r\n", "<br/>"));
+                        contentOriginal = data.bizObj.replaceAll("\r\n", "<br/>");
+                        $(".blockquote").html(contentOriginal);
                     } else {
                         $(".blockquote").html(data.retMsg);
                     }
