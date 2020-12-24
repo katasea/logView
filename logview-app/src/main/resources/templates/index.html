@@ -46,29 +46,9 @@
                     </div>
                 </div>
                 <ul class="navbar-nav">
-
-<!--                    <li class="dropdown nav-item">-->
-<!--                        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">-->
-<!--                            <i class="fa fa-cogs d-lg-none d-xl-none"></i> Getting started-->
-<!--                        </a>-->
-<!--                        <div class="dropdown-menu dropdown-with-icons">-->
-<!--                            <a href="https://demos.creative-tim.com/blk-design-system/docs/1.0/getting-started/overview.html" class="dropdown-item">-->
-<!--                                <i class="tim-icons icon-paper"></i> Documentation-->
-<!--                            </a>-->
-<!--                            <a href="examples/register-page.html" class="dropdown-item">-->
-<!--                                <i class="tim-icons icon-bullet-list-67"></i>Register Page-->
-<!--                            </a>-->
-<!--                            <a href="examples/landing-page.html" class="dropdown-item">-->
-<!--                                <i class="tim-icons icon-image-02"></i>Landing Page-->
-<!--                            </a>-->
-<!--                            <a href="examples/profile-page.html" class="dropdown-item">-->
-<!--                                <i class="tim-icons icon-single-02"></i>Profile Page-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </li>-->
                     <li class="nav-item">
-                        <a class="nav-link btn btn-info d-none d-lg-block" href="javascript:void(0)" onclick="logout()">
-                            <i class="tim-icons icon-user-run"></i> 退出
+                        <a class="nav-link" href="javascript:void(0)" onclick="logout()">
+                            <i class="tim-icons icon-button-power"></i> 退出
                         </a>
                     </li>
                 </ul>
@@ -95,22 +75,6 @@
                         <div class="card-body" style="height: 440px;">
                             <h5 class="text-left current-path">当前路径：</h5>
                             <ul id="fileViewUl" class="nav nav-pills nav-pills-primary nav-pills-icons">
-<!--                                <li class="nav-item">-->
-<!--                                    <a class="nav-link" data-toggle="tab" href="#link7">-->
-<!--                                        <i class="tim-icons icon-tv-2"></i> Home-->
-<!--                                    </a>-->
-<!--                                </li>-->
-
-<!--                                <li class="nav-item">-->
-<!--                                    <a class="nav-link" data-toggle="tab" href="#link8">-->
-<!--                                        <i class="tim-icons icon-single-copy-04"></i> Messages-->
-<!--                                    </a>-->
-<!--                                </li>-->
-<!--                                <li class="nav-item">-->
-<!--                                    <a class="nav-link active show" data-toggle="tab" href="#link9">-->
-<!--                                        <i class="tim-icons icon-settings-gear-63"></i> Settings-->
-<!--                                    </a>-->
-<!--                                </li>-->
 
                             </ul>
                         </div>
@@ -131,14 +95,6 @@
                                 <i class="tim-icons icon-triangle-right-17"></i>
                                 命令
                             </a>
-<!--                            <a href="javascript:void(0)" class="btn btn-info btn-round ">-->
-<!--                                <i class="tim-icons icon-cloud-download-93"></i>-->
-<!--                                下载-->
-<!--                            </a>-->
-<!--                            <a href="javascript:void(0)" class="btn btn-info btn-round ">-->
-<!--                                <i class="tim-icons icon-cloud-download-93"></i>-->
-<!--                                上传-->
-<!--                            </a>-->
 
                         </div>
                     </div>
@@ -163,17 +119,15 @@
     <!-- Theme JS -->
     <script th:src="@{/js/blk-design-system.js}"></script>
     <script th:src="@{/js/plugins/jquery.slimscroll.min.js}"></script>
+    <script th:src="@{/js/logView.js}"></script>
     <script type="text/javascript">
-        var appid = "1A3VL0KVK0000B020A0A0000CC3F48AD";
-        var encryptType = "Plain";
-        var signType = "Plain";
         var currentPath = getUrlParam("path");
         var filePath = '';
         $(function(){
-            getFilesDirectory(currentPath,0);
+            getFilesDirectory(null,currentPath,0);
             $(".card-body").slimScroll({ height: 440,wheelStep: 10});
             $(".download").click(function () {
-                if(filePath.indexOf(".")!=-1) {
+                if(filePath.indexOf(".")!== -1) {
 
                     window.location.href = getRootPath()+"/file/download?path="+filePath;
                 } else {
@@ -189,17 +143,18 @@
 
         });
 
-        function getFilesDirectory(parentDir,ftype) {
+        var itemOfOld = null;
+        function getFilesDirectory(item,parentDir,ftype) {
             var method = "file/service/getFileList/V1.0";
             var paramPath = parentDir;
 
-            if(paramPath!='' && paramPath.indexOf("/")==-1) {
+            if(paramPath !== '' && paramPath.indexOf("/") === -1) {
                 paramPath = paramPath + "/";
             }
             $('.current-path').html("当前路径："+paramPath);
             filePath = paramPath;
             var params = {"parentDir":paramPath};
-            if(ftype == 0) {
+            if(ftype == '0') {
                 $.ajax(
                     {
                         url: getRootPath() +'/api/gateway.do',
@@ -208,7 +163,7 @@
                         headers:{'Content-Type':'application/json;charset=utf8'},
                         data:JSON.stringify(getGlobalParams(params,method)),
                         success:function(data){
-                            if(data.retCode == '0000') {
+                            if(handlerResult(data)) {
                                 var view = $("#fileViewUl");
                                 view.detach();
                                 $(".card-body").append("<ul id=\"fileViewUl\" class=\"nav nav-pills nav-pills-primary nav-pills-icons\"></ul>");
@@ -216,46 +171,59 @@
                                 currentPath = parentDir;
 
                                 var files = data.bizObj;
-                                if(files!=null && files.length!=0) {
-                                    for(var i=0;i<files.length; i++) {
+                                if (files != null && files.length != 0) {
+                                    for (var i = 0; i < files.length; i++) {
                                         var file = files[i];
                                         var classStr = '';
                                         var classStr2 = '';
                                         var actionContent = '';
-                                        if(file.type === 0) {
+                                        var fileTypeName = '';
+                                        if (file.type === 0) {
                                             classStr = 'icon-tv-2';
                                             classStr2 = 'badge-danger';
-                                            actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(\''+file.dir+'\',\''+file.type+'\');" ';
-                                        }else {
+                                            fileTypeName = "目录";
+                                            actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(this,\'' + file.dir + '\',\'' + file.type + '\');" ';
+                                        } else {
                                             classStr = 'icon-single-copy-04';
                                             classStr2 = 'badge-success';
-                                            if(file.name.toUpperCase().indexOf(".LOG")!=-1
-                                                ||file.name.toUpperCase().indexOf(".XML")!=-1
-                                                ||file.name.toUpperCase().indexOf(".TXT")!=-1
-                                                ||file.name.toUpperCase().indexOf(".BAT")!=-1
-                                                ||file.name.toUpperCase().indexOf(".SH")!=-1) {
-                                                actionContent = 'href="'+getRootPath()+'/view?path='+file.dir+'"';
-                                            }else {
-                                                actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(\''+file.dir+'\',\''+file.type+'\');" ';
+                                            fileTypeName = '文件';
+                                            if (file.name.toUpperCase().indexOf(".LOG") != -1
+                                                || file.name.toUpperCase().indexOf(".XML") != -1
+                                                || file.name.toUpperCase().indexOf(".TXT") != -1
+                                                || file.name.toUpperCase().indexOf(".BAT") != -1
+                                                || file.name.toUpperCase().indexOf(".PROPERTIES") != -1
+                                                || file.name.toUpperCase().indexOf(".SH") != -1) {
+                                                actionContent = 'href="' + getRootPath() + '/view?path=' + file.dir + '"';
+                                            } else {
+                                                actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(this,\'' + file.dir + '\',\'' + file.type + '\');" ';
                                             }
                                         }
 
                                         var content = '<li class="nav-item">\n' +
-                                            '        <a class="nav-link " '+actionContent+'\n' +
-                                            '           data-toggle="tooltip" data-placement="bottom" title="总容量: '+file.totalSpace+'M 空闲: '+file.freeSpace+'M 文件大小: '+file.usedSpace+'" >'+
-                                            '           <i class="tim-icons '+classStr+'"></i> <span class="badge '+classStr2+'">'+file.name+'</span>' +
+                                            '        <a class="nav-link " ' + actionContent + '\n' +
+                                            '           data-toggle="tooltip" data-placement="bottom" title="总容量: ' + file.totalSpace + 'M 空闲: ' + file.freeSpace + 'M 文件大小: ' + file.usedSpace + '" >' +
+                                            '           <i class="tim-icons ' + classStr + '"></i><span class="badge ' + classStr2 + '">' + fileTypeName + '</span><br>' + file.name + '' +
                                             '          </a>\n' +
                                             '        </li>';
                                         view.append(content);
                                     }
                                 }
-                            }else {
-                                alert(data.retMsg);
                             }
                         },
                         error:function(data){console.log("error");}
                     }
                 );
+            }else {
+                //手动添加class变更颜色
+                if(itemOfOld!=null) {
+                    var oldClassVar = itemOfOld.getAttribute("class");
+                    oldClassVar = oldClassVar.replace("active","");
+                    itemOfOld.setAttribute("class",oldClassVar);
+                }
+                var classVar = item.getAttribute("class");
+                classVar = classVar.concat(" active");
+                item.setAttribute("class",classVar);
+                itemOfOld = item;
             }
         }
 
@@ -266,59 +234,23 @@
                 type: "POST",
                 dataType: "json",
                 success: function (data) {
-                    if(data.retCode === '0000') {
+                    if(handlerResult(data)) {
                         window.location.href = getRootPath()+"/login";
-                    }else {
-                        alert(data.retMsg);
                     }
                 }
             });
         }
         function goBackParent() {
             var tempPath = currentPath;
-            if(tempPath.charAt(tempPath.length-1) == '/') {
+            if(tempPath.charAt(tempPath.length-1) === '/') {
                 tempPath = "";
             }else{
                 tempPath = tempPath.substring(0,tempPath.lastIndexOf("/"));
             }
-            getFilesDirectory(tempPath,0);
+            getFilesDirectory(null,tempPath,0);
         }
 
-        function getGlobalParams(params,method) {
-            var timestamp = (new Date()).valueOf();
-            var fparams = {
-                "appId": appid,
-                "bizContent": JSON.stringify(params),
-                "encryptType": encryptType,
-                "method": method,
-                "signType": signType,
-                "timestamp": timestamp
-            };
-            return fparams;
-        }
-        function getUrlParam (name) {
-            var reg = new RegExp('(^|&)' + name + '=(.*)(&[^&=]+=)');
-            var regLast = new RegExp('(^|&)' + name + '=(.*)($)');
-            var r = window.location.search.substr(1).match(reg) || window.location.search.substr(1).match(regLast);
-            if (r != null) {
-                var l = r[2].match(/&[^&=]+=/)
-                if (l) {
-                    return decodeURIComponent(r[2].split(l[0])[0]);
-                } else return decodeURIComponent(r[2]);
-            }
-            return '';
-        }
-        function getRootPath() {
-            var strFullPath = window.document.location.href;
-            var strPath = document.location.pathname;
-            if(strPath.lastIndexOf("/") != strPath.indexOf("/")) {
-                strPath = strPath.substring(0,strPath.lastIndexOf("/"));
-            }
-            var pos = strFullPath.indexOf(strPath);
-            var prePath = strFullPath.substring(0, pos);
-            // var postPath = strPath.substring(0,strPath.substring(1).indexOf("/")+1);
-            return prePath+strPath;
-        }
+
     </script>
 </body>
 </html>

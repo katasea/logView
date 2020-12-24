@@ -61,7 +61,7 @@
             <div class="form-row">
                 <div class="form-group  col-md-4">
                     <div class="input-group">
-                        <input type="text" class="form-control form-control-success searchInputText"
+                        <input id="keyWord" type="text" class="form-control form-control-success searchInputText"
                                placeholder="输入关键词, 按<N>到下一个位置 按<B>到上一个位置">
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="tim-icons icon-lock-circle"></i></span>
@@ -97,12 +97,9 @@
 
 <!-- Theme JS -->
 <script th:src="@{/js/blk-design-system.js}"></script>
-<!--<script th:src="@{/js/plugins/jquery.slimscroll.min.js}"></script>-->
+<script th:src="@{/js/logView.js}"></script>
 <script type="text/javascript">
     var path = getUrlParam("path");
-    var appid = "1A3VL0KVK0000B020A0A0000CC3F48AD";
-    var encryptType = "Plain";
-    var signType = "Plain";
     var contentOriginal = '';
     // var qs = $('.searchInputText').quicksearch('.blockquote');
     $(function () {
@@ -129,12 +126,15 @@
 
         $(document).bind('keydown', function (event) {
 
-            // console.log(event.keyCode);
-            if (event.keyCode === 78) {
+            console.log(event.keyCode);
+            if (document.activeElement.id!=="keyWord"&&event.keyCode === 78) {
                 scrollToResult(0);
             }
-            if (event.keyCode === 66) {
+            if (document.activeElement.id!=="keyWord"&&event.keyCode === 66) {
                 scrollToResult(1);
+            }
+            if (event.keyCode === 13) {
+                searchLogContent();
             }
 
         });
@@ -157,16 +157,22 @@
     var i = 0;
 
     function searchLogContent() {
-        var tagContent = '<span class="result" style="background:yellow;color:red;">';
+        $(".searchInputText").blur();
         var searchText = $(".searchInputText").val();
-        var content = contentOriginal;
 
-        //清楚上次搜索结果
-        var regExp = new RegExp(searchText, 'g');
-        content = content.replace(regExp, '<span class="result" style="background:yellow;color:red;">' + searchText + '</span>');
+        if(searchText == null || searchText == '') {
+            alert('搜素内容不能为空！');
+        }else {
+            var tagContent = '<span class="result" style="background:yellow;color:red;">';
+            var content = contentOriginal;
 
-        $('.blockquote').html(content);
-        scrollToResult(0);
+            //清楚上次搜索结果
+            var regExp = new RegExp(searchText, 'g');
+            content = content.replace(regExp, '<span class="result" style="background:yellow;color:red;">' + searchText + '</span>');
+
+            $('.blockquote').html(content);
+            scrollToResult(0);
+        }
     }
 
     function scrollToResult(flag) {
@@ -204,7 +210,7 @@
                 headers: {'Content-Type': 'application/json;charset=utf8'},
                 data: JSON.stringify(getGlobalParams(params, method)),
                 success: function (data) {
-                    if (data.retCode == '0000') {
+                    if (handlerResult(data)) {
                         contentOriginal = data.bizObj.replaceAll("\r\n", "<br/>");
                         $(".blockquote").html(contentOriginal);
                     } else {
@@ -218,45 +224,6 @@
                 }
             }
         );
-    }
-
-    function getUrlParam(name) {
-        var reg = new RegExp('(^|&)' + name + '=(.*)(&[^&=]+=)');
-        var regLast = new RegExp('(^|&)' + name + '=(.*)($)');
-        var r = window.location.search.substr(1).match(reg) || window.location.search.substr(1).match(regLast);
-        if (r != null) {
-            var l = r[2].match(/&[^&=]+=/)
-            if (l) {
-                return decodeURIComponent(r[2].split(l[0])[0]);
-            } else return decodeURIComponent(r[2]);
-        }
-        return null;
-    }
-
-
-    function getGlobalParams(params, method) {
-        var timestamp = (new Date()).valueOf();
-        var fparams = {
-            "appId": appid,
-            "bizContent": JSON.stringify(params),
-            "encryptType": encryptType,
-            "method": method,
-            "signType": signType,
-            "timestamp": timestamp
-        };
-        return fparams;
-    }
-
-    function getRootPath() {
-        var strFullPath = window.document.location.href;
-        var strPath = document.location.pathname;
-        if (strPath.lastIndexOf("/") != strPath.indexOf("/")) {
-            strPath = strPath.substring(0, strPath.lastIndexOf("/"));
-        }
-        var pos = strFullPath.indexOf(strPath);
-        var prePath = strFullPath.substring(0, pos);
-        // var postPath = strPath.substring(0,strPath.substring(1).indexOf("/")+1);
-        return prePath + strPath;
     }
 </script>
 </body>

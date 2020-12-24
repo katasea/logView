@@ -33,19 +33,27 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
 	private boolean responseFalse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8");
 		ResponseVO<String> responseVO = new ResponseVO<>();
 		responseVO.setRetInfo(HandlerType.NO_LOGIN);
+
 		log.info("登录拦截器：登录失败！地址:{},信息:{}",request.getRequestURI(),JSON.toJSONString(responseVO));
-		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
-		String errorMsg = "系统平台会话已超时,或者未登录!请重新登录";
-		out.println("<script language='javascript'>");
-		out.println("var frameArray = window.top.frames;");
-		out.println("window.parent.top.location.href='" + request.getContextPath() + "/login"+ "';");
-		out.println("</script>");
-		out.flush();
-		out.close();
+		if("POST".equals(request.getMethod())) {
+			response.setContentType("application/json; charset=utf-8");
+			PrintWriter out = response.getWriter();
+			out.write(JSON.toJSONString(responseVO));
+			out.flush();
+			out.close();
+		}else {
+			response.setContentType("text/html");
+			PrintWriter out = response.getWriter();
+//			String errorMsg = "系统平台会话已超时,或者未登录!请重新登录";
+			out.println("<script language='javascript'>");
+			out.println("var frameArray = window.top.frames;");
+			out.println("window.parent.top.location.href='" + request.getContextPath() + "/login"+ "';");
+			out.println("</script>");
+			out.flush();
+			out.close();
+		}
 		return false;
 	}
 
