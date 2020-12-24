@@ -31,7 +31,7 @@ function getUrlParam (name) {
     var regLast = new RegExp('(^|&)' + name + '=(.*)($)');
     var r = window.location.search.substr(1).match(reg) || window.location.search.substr(1).match(regLast);
     if (r != null) {
-        var l = r[2].match(/&[^&=]+=/)
+        var l = r[2].match(/&[^&=]+=/);
         if (l) {
             return decodeURIComponent(r[2].split(l[0])[0]);
         } else return decodeURIComponent(r[2]);
@@ -76,4 +76,16 @@ function handlerResult(responseVo) {
     }else {
         return false;
     }
+}
+
+function logViewAlert(content) {
+    $.alert({
+        icon: 'fa fa-question',
+        theme: 'light',
+        closeIcon: true,
+        animation: 'scale',
+        type: 'orange',
+        title:'提示',
+        content:content
+    });
 }

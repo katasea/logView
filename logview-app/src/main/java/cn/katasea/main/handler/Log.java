@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Response;
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
@@ -141,12 +142,23 @@ public class Log {
 
 	@PostMapping(value = "/file/upload")
 	@ResponseBody
-	public StateInfo fileUpload(@RequestParam("file") MultipartFile file,
-	                            @RequestParam(value = "fileUrl", required = true) String fileUrl) throws IOException {
-		StateInfo stateInfo = new StateInfo();
-		File newFile=new File(fileUrl+"\\"+file.getOriginalFilename());
-		file.transferTo(newFile);
-		return stateInfo;
+	public ResponseVO<String> fileUpload(@RequestParam("file") MultipartFile file,
+	                            @RequestParam(value = "fileUrl", required = true) String fileUrl){
+		ResponseVO<String> responseVO = new ResponseVO<>();
+		try {
+			File temp = new File(fileUrl);
+			if(!temp.isDirectory()) {
+				fileUrl = fileUrl.substring(0,fileUrl.lastIndexOf("/"));
+			}
+			File newFile=new File(fileUrl+File.separator+file.getOriginalFilename());
+			log.info("开始上传文件：{}",fileUrl+File.separator+file.getOriginalFilename());
+			file.transferTo(newFile);
+
+		}catch (Exception e) {
+			responseVO.setRetInfo(HandlerType.SYSTEM_ERROR);
+			responseVO.setRetMsg("上传文件失败！"+e.getMessage());
+		}
+		return responseVO;
 	}
 
 

@@ -14,63 +14,66 @@
 
     <!-- Theme CSS -->
     <link type="text/css" th:href="@{/css/blk-design-system.css}" rel="stylesheet">
+    <link type="text/css" th:href="@{/css/jquery-confirm.css}" rel="stylesheet">
     <link type="text/css" th:href="@{/demo/demo.css}" rel="stylesheet">
     <!-- Optional: page related CSS-->
 </head>
 <body class="index-page">
-    <nav class="navbar navbar-expand-lg fixed-top bg-info " color-on-scroll="1">
-        <div class="container">
-            <div class="navbar-translate">
-                <a class="navbar-brand" th:href="@{/}"  rel="tooltip" title="" data-placement="bottom" target="_blank" data-original-title="新开一个窗口查看文件目录信息">
-                    <span>Log•</span> View System
-                </a>
-                <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-bar bar1"></span>
-                    <span class="navbar-toggler-bar bar2"></span>
-                    <span class="navbar-toggler-bar bar3"></span>
-                </button>
-            </div>
-            <div class="collapse navbar-collapse justify-content-end" id="navigation">
-                <div class="navbar-collapse-header">
-                    <div class="row">
-                        <div class="col-6 collapse-brand">
-                            <a>
-                                LogView•
-                            </a>
-                        </div>
-                        <div class="col-6 collapse-close text-right">
-                            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-                                <i class="tim-icons icon-simple-remove"></i>
-                            </button>
-                        </div>
+<!--    <nav class="navbar navbar-expand-lg fixed-top bg-info " >-->
+<nav class="navbar navbar-expand-lg fixed-top navbar-transparent">
+    <div class="container">
+        <div class="navbar-translate">
+            <a class="navbar-brand" th:href="@{/index}" rel="tooltip" title="" data-placement="bottom" target="_blank"
+               data-original-title="新开一个窗口查看文件目录信息">
+                <span>Log•</span> View System
+            </a>
+            <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
+                    aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse justify-content-end" id="navigation">
+            <div class="navbar-collapse-header">
+                <div class="row">
+                    <div class="col-6 collapse-brand">
+                        <a>
+                            LogView•
+                        </a>
+                    </div>
+                    <div class="col-6 collapse-close text-right">
+                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navigation"
+                                aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                            <i class="tim-icons icon-simple-remove"></i>
+                        </button>
                     </div>
                 </div>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0)" onclick="logout()">
-                            <i class="tim-icons icon-button-power"></i> 退出
-                        </a>
-                    </li>
-                </ul>
             </div>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0)" onclick="logout()">
+                        <i class="tim-icons icon-button-power"></i> 退出
+                    </a>
+                </li>
+            </ul>
         </div>
-    </nav>
-    <div class="wrapper">
-        <div class="page-header header-filter">
-            <div class="squares square1"></div>
-            <div class="squares square2"></div>
-            <div class="squares square3"></div>
-<!--            <div class="squares square4"></div>-->
-<!--            <div class="squares square5"></div>-->
-<!--            <div class="squares square6"></div>-->
-            <div class="squares square7"></div>
-            <div class="container">
-                <div class="content-center " style="width:100%">
-
+    </div>
+</nav>
+<div class="main">
+    <div class="section section-signup" style="margin-top: -60px;">
+        <div class="container">
+            <div class="squares square-1"></div>
+            <div class="squares square-2"></div>
+            <div class="squares square-3"></div>
+            <div class="squares square-4"></div>
+            <!--        <div class="container">-->
+            <div class="row row-grid justify-content-between align-items-center">
+                <div class="col-lg-12 mb-lg-auto">
                     <div class="card " style="width:100%;">
-                        <div class="card-header">
-<!--                            <img class="card-img" th:src="@{/img/square1.png}" alt="Card image">-->
-                            <h2 class="card-title">文件浏览</h2>
+                        <div class="card-header bg-info">
+                            <!--                            <img class="card-img" th:src="@{/img/square1.png}" alt="Card image">-->
+                            <h2 class="card-title text-white ">文件浏览</h2>
                         </div>
                         <div class="card-body" style="height: 440px;">
                             <h5 class="text-left current-path">当前路径：</h5>
@@ -78,8 +81,9 @@
 
                             </ul>
                         </div>
-                        <div class="card-footer">
-                            <a href="javascript:void(0)" class="btn btn-info btn-sm btn-round " onclick="goBackParent()">
+                        <div class="card-footer text-center">
+                            <a href="javascript:void(0)" class="btn btn-info btn-sm btn-round "
+                               onclick="goBackParent()">
                                 <i class="tim-icons icon-double-left"></i>
                                 上级
                             </a>
@@ -87,7 +91,8 @@
                                 <i class="tim-icons icon-cloud-download-93"></i>
                                 下载
                             </a>
-                            <a href="javascript:void(0)" class="btn btn-success btn-sm btn-round upload">
+                            <a href="javascript:void(0)" class="btn btn-success btn-sm btn-round upload"
+                               data-toggle="modal" data-target="#myModal1">
                                 <i class="tim-icons icon-cloud-upload-94"></i>
                                 上传
                             </a>
@@ -98,159 +103,232 @@
 
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-        <div class="main">
+    </div>
+</div>
+<!-- Large modal -->
+
+<div class="modal fade modal-black " id="myModal1" tabindex="-1" data-backdrop="static" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+
+
+        <div class="modal-content">
+            <div class="modal-header justify-content-center">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <i class="tim-icons icon-simple-remove text-white"></i>
+                </button>
+                <div class="modal-profile">
+                    <i class="tim-icons icon-cloud-upload-94"></i>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <form id="uploadModalForm" th:action="@{/file/upload}" enctype="multipart/form-data" method="post">
+                    <div class="col-sm-12">
+                        <input name="file" multiple type="file" data-show-caption="true" id="file"/>
+                    </div>
+                </form>
+                <!--                    <div class="progress-container progress-success">-->
+                <!--                        <span class="progress-badge">Success</span>-->
+                <!--                        <div class="progress">-->
+                <!--                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60"-->
+                <!--                                 aria-valuemin="0" aria-valuemax="100" style="width: 60%;">-->
+                <!--                                <span class="progress-value">60%</span>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link btn-neutral file-upload-btn" onclick="fileUpload()">提交</button>
+                <button type="button" class="btn btn-link btn-neutral" data-dismiss="modal">取消</button>
+            </div>
 
         </div>
     </div>
-
-    <script th:src="@{/js/core/jquery.min.js}"></script>
-    <script th:src="@{/js/core/popper.min.js}"></script>
-    <script th:src="@{/js/core/bootstrap.min.js}"></script>
+</div>
+<script th:src="@{/js/core/jquery.min.js}"></script>
+<script th:src="@{/js/core/popper.min.js}"></script>
+<script th:src="@{/js/core/bootstrap.min.js}"></script>
 <!--    <script th:src="@{/js/plugins/perfect-scrollbar.jquery.min.js}"></script>-->
 <!--    <script th:src="@{/js/plugins/bootstrap-switch.js}"></script>-->
 <!--    <script th:src="@{/js/plugins/nouislider.min.js}"></script>-->
 <!--    <script th:src="@{/js/plugins/moment.min.js}"></script>-->
-    <script th:src="@{/demo/demo.js}"></script>
+<script th:src="@{/demo/demo.js}"></script>
 
-    <!-- Theme JS -->
-    <script th:src="@{/js/blk-design-system.js}"></script>
-    <script th:src="@{/js/plugins/jquery.slimscroll.min.js}"></script>
-    <script th:src="@{/js/logView.js}"></script>
-    <script type="text/javascript">
-        var currentPath = getUrlParam("path");
-        var filePath = '';
-        $(function(){
-            getFilesDirectory(null,currentPath,0);
-            $(".card-body").slimScroll({ height: 440,wheelStep: 10});
-            $(".download").click(function () {
-                if(filePath.indexOf(".")!== -1) {
-
-                    window.location.href = getRootPath()+"/file/download?path="+filePath;
-                } else {
-                    alert("不是一个文件,无法下载");
-                }
-            });
-            $(".upload").click(function () {
-                alert('等待实现');
-            });
-            $(".shell").click(function () {
-                alert('等待实现');
-            });
-
+<!-- Theme JS -->
+<script th:src="@{/js/blk-design-system.js}"></script>
+<script th:src="@{/js/plugins/jquery.slimscroll.min.js}"></script>
+<script th:src="@{/js/logView.js}"></script>
+<script th:src="@{/js/plugins/jquery-confirm.js}"></script>
+<script type="text/javascript">
+    var currentPath = getUrlParam("path");
+    var filePath = '';
+    $(function () {
+        getFilesDirectory(null, currentPath, 0);
+        $(".card-body").slimScroll({height: 440, wheelStep: 10});
+        $(".download").click(function () {
+            if (filePath.indexOf(".") !== -1) {
+                window.location.href = getRootPath() + "/file/download?path=" + filePath;
+            } else {
+                logViewAlert('当前选择不是一个文件，无法下载');
+            }
+        });
+        $(".shell").click(function () {
+            logViewAlert('等待实现');
         });
 
-        var itemOfOld = null;
-        function getFilesDirectory(item,parentDir,ftype) {
-            var method = "file/service/getFileList/V1.0";
-            var paramPath = parentDir;
+    });
 
-            if(paramPath !== '' && paramPath.indexOf("/") === -1) {
-                paramPath = paramPath + "/";
-            }
-            $('.current-path').html("当前路径："+paramPath);
-            filePath = paramPath;
-            var params = {"parentDir":paramPath};
-            if(ftype == '0') {
-                $.ajax(
-                    {
-                        url: getRootPath() +'/api/gateway.do',
-                        type:'post',
-                        dateType:'json',
-                        headers:{'Content-Type':'application/json;charset=utf8'},
-                        data:JSON.stringify(getGlobalParams(params,method)),
-                        success:function(data){
-                            if(handlerResult(data)) {
-                                var view = $("#fileViewUl");
-                                view.detach();
-                                $(".card-body").append("<ul id=\"fileViewUl\" class=\"nav nav-pills nav-pills-primary nav-pills-icons\"></ul>");
-                                view = $("#fileViewUl");
-                                currentPath = parentDir;
+    var itemOfOld = null;
+    function fileUpload() {
+        if(currentPath != '') {
+            // $(".file-upload-btn").attr("disabled",true);
 
-                                var files = data.bizObj;
-                                if (files != null && files.length != 0) {
-                                    for (var i = 0; i < files.length; i++) {
-                                        var file = files[i];
-                                        var classStr = '';
-                                        var classStr2 = '';
-                                        var actionContent = '';
-                                        var fileTypeName = '';
-                                        if (file.type === 0) {
-                                            classStr = 'icon-tv-2';
-                                            classStr2 = 'badge-danger';
-                                            fileTypeName = "目录";
-                                            actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(this,\'' + file.dir + '\',\'' + file.type + '\');" ';
-                                        } else {
-                                            classStr = 'icon-single-copy-04';
-                                            classStr2 = 'badge-success';
-                                            fileTypeName = '文件';
-                                            if (file.name.toUpperCase().indexOf(".LOG") != -1
-                                                || file.name.toUpperCase().indexOf(".XML") != -1
-                                                || file.name.toUpperCase().indexOf(".TXT") != -1
-                                                || file.name.toUpperCase().indexOf(".BAT") != -1
-                                                || file.name.toUpperCase().indexOf(".PROPERTIES") != -1
-                                                || file.name.toUpperCase().indexOf(".SH") != -1) {
-                                                actionContent = 'href="' + getRootPath() + '/view?path=' + file.dir + '"';
-                                            } else {
-                                                actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(this,\'' + file.dir + '\',\'' + file.type + '\');" ';
-                                            }
-                                        }
+            var formData = new FormData();
+            formData.append("file",$('#file')[0].files[0]);
 
-                                        var content = '<li class="nav-item">\n' +
-                                            '        <a class="nav-link " ' + actionContent + '\n' +
-                                            '           data-toggle="tooltip" data-placement="bottom" title="总容量: ' + file.totalSpace + 'M 空闲: ' + file.freeSpace + 'M 文件大小: ' + file.usedSpace + '" >' +
-                                            '           <i class="tim-icons ' + classStr + '"></i><span class="badge ' + classStr2 + '">' + fileTypeName + '</span><br>' + file.name + '' +
-                                            '          </a>\n' +
-                                            '        </li>';
-                                        view.append(content);
-                                    }
-                                }
-                            }
-                        },
-                        error:function(data){console.log("error");}
-                    }
-                );
-            }else {
-                //手动添加class变更颜色
-                if(itemOfOld!=null) {
-                    var oldClassVar = itemOfOld.getAttribute("class");
-                    oldClassVar = oldClassVar.replace("active","");
-                    itemOfOld.setAttribute("class",oldClassVar);
-                }
-                var classVar = item.getAttribute("class");
-                classVar = classVar.concat(" active");
-                item.setAttribute("class",classVar);
-                itemOfOld = item;
-            }
-        }
+            formData.append("fileUrl", currentPath);
 
-        function logout() {
-            // 提交用户名和密码给后台
             $.ajax({
-                url: getRootPath() + "/logout",
-                type: "POST",
-                dataType: "json",
-                success: function (data) {
+                url:getRootPath()+'/file/upload',
+                type:'POST',
+                async: false,
+                timeout: 30000000,
+                data: formData,
+                processData : false, // 使数据不做处理
+                contentType : false, // 不要设置Content-Type请求头
+                success: function(data){
+                    // $(".file-upload-btn").attr("disabled",false);
                     if(handlerResult(data)) {
-                        window.location.href = getRootPath()+"/login";
+                        $("#myModal1").modal('hide');
+                        $('#file').val('');
+                        logViewAlert("上传文件成功!");
+                        getFilesDirectory(null,currentPath,0);
                     }
+                },
+                error:function(response){
+                    console.log(response);
                 }
             });
+        }else {
+            logViewAlert("当前空路径，不允许上传文件，请重新选择目录");
         }
-        function goBackParent() {
-            var tempPath = currentPath;
-            if(tempPath.charAt(tempPath.length-1) === '/') {
-                tempPath = "";
-            }else{
-                tempPath = tempPath.substring(0,tempPath.lastIndexOf("/"));
+
+
+    }
+    function getFilesDirectory(item, parentDir, ftype) {
+        var method = "file/service/getFileList/V1.0";
+        var paramPath = parentDir;
+
+        if (paramPath !== '' && paramPath.indexOf("/") === -1) {
+            paramPath = paramPath + "/";
+        }
+        $('.current-path').html("当前路径：" + paramPath);
+        filePath = paramPath;
+        var params = {"parentDir": paramPath};
+        if (ftype == '0') {
+            $.ajax(
+                {
+                    url: getRootPath() + '/api/gateway.do',
+                    type: 'post',
+                    dateType: 'json',
+                    headers: {'Content-Type': 'application/json;charset=utf8'},
+                    data: JSON.stringify(getGlobalParams(params, method)),
+                    success: function (data) {
+                        if (handlerResult(data)) {
+                            var view = $("#fileViewUl");
+                            view.detach();
+                            $(".card-body").append("<ul id=\"fileViewUl\" class=\"nav nav-pills nav-pills-primary nav-pills-icons\"></ul>");
+                            view = $("#fileViewUl");
+                            currentPath = parentDir;
+
+                            var files = data.bizObj;
+                            if (files != null && files.length != 0) {
+                                for (var i = 0; i < files.length; i++) {
+                                    var file = files[i];
+                                    var classStr = '';
+                                    var classStr2 = '';
+                                    var actionContent = '';
+                                    var fileTypeName = '';
+                                    if (file.type === 0) {
+                                        classStr = 'icon-tv-2';
+                                        classStr2 = 'badge-danger';
+                                        fileTypeName = "目录";
+                                        actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(this,\'' + file.dir + '\',\'' + file.type + '\');" ';
+                                    } else {
+                                        classStr = 'icon-single-copy-04';
+                                        classStr2 = 'badge-success';
+                                        fileTypeName = '文件';
+                                        if (file.name.toUpperCase().indexOf(".LOG") != -1
+                                            || file.name.toUpperCase().indexOf(".XML") != -1
+                                            || file.name.toUpperCase().indexOf(".TXT") != -1
+                                            || file.name.toUpperCase().indexOf(".BAT") != -1
+                                            || file.name.toUpperCase().indexOf(".PROPERTIES") != -1
+                                            || file.name.toUpperCase().indexOf(".SH") != -1) {
+                                            actionContent = 'href="' + getRootPath() + '/view?path=' + file.dir + '"';
+                                        } else {
+                                            actionContent = 'href="javascript:void(0);"  onclick="getFilesDirectory(this,\'' + file.dir + '\',\'' + file.type + '\');" ';
+                                        }
+                                    }
+
+                                    var content = '<li class="nav-item">\n' +
+                                        '        <a class="nav-link " ' + actionContent + '\n' +
+                                        '           data-toggle="tooltip" data-placement="bottom" title="总容量: ' + file.totalSpace + 'M 空闲: ' + file.freeSpace + 'M 文件大小: ' + file.usedSpace + '" >' +
+                                        '           <i class="tim-icons ' + classStr + '"></i><span class="badge ' + classStr2 + '">' + fileTypeName + '</span><br>' + file.name + '' +
+                                        '          </a>\n' +
+                                        '        </li>';
+                                    view.append(content);
+                                }
+                            }
+                        }
+                    },
+                    error: function (data) {
+                        logViewAlert("error");
+                    }
+                }
+            );
+        } else {
+            //手动添加class变更颜色
+            if (itemOfOld != null) {
+                var oldClassVar = itemOfOld.getAttribute("class");
+                oldClassVar = oldClassVar.replace("active", "");
+                itemOfOld.setAttribute("class", oldClassVar);
             }
-            getFilesDirectory(null,tempPath,0);
+            var classVar = item.getAttribute("class");
+            classVar = classVar.concat(" active");
+            item.setAttribute("class", classVar);
+            itemOfOld = item;
         }
+    }
+
+    function logout() {
+        // 提交用户名和密码给后台
+        $.ajax({
+            url: getRootPath() + "/logout",
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (handlerResult(data)) {
+                    window.location.href = getRootPath() + "/login";
+                }
+            }
+        });
+    }
+
+    function goBackParent() {
+        var tempPath = currentPath;
+        if (tempPath.charAt(tempPath.length - 1) === '/') {
+            tempPath = "";
+        } else {
+            tempPath = tempPath.substring(0, tempPath.lastIndexOf("/"));
+        }
+        getFilesDirectory(null, tempPath, 0);
+    }
 
 
-    </script>
+</script>
 </body>
 </html>

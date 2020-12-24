@@ -15,6 +15,7 @@
     <!-- Theme CSS -->
     <link type="text/css" th:href="@{/css/blk-design-system.css}" rel="stylesheet">
     <link type="text/css" th:href="@{/demo/demo.css}" rel="stylesheet">
+    <link type="text/css" th:href="@{/css/jquery-confirm.css}" rel="stylesheet">
     <!-- Optional: page related CSS-->
 </head>
 <body class="index-page">
@@ -82,18 +83,15 @@
     </div>
 
     <script th:src="@{/js/core/jquery.min.js}"></script>
-    <script th:src="@{/js/core/popper.min.js}"></script>
     <script th:src="@{/js/core/bootstrap.min.js}"></script>
-<!--    <script th:src="@{/js/plugins/perfect-scrollbar.jquery.min.js}"></script>-->
-<!--    <script th:src="@{/js/plugins/bootstrap-switch.js}"></script>-->
-<!--    <script th:src="@{/js/plugins/nouislider.min.js}"></script>-->
-<!--    <script th:src="@{/js/plugins/moment.min.js}"></script>-->
     <script th:src="@{/demo/demo.js}"></script>
 
     <!-- Theme JS -->
     <script th:src="@{/js/blk-design-system.js}"></script>
     <script th:src="@{/js/plugins/jsencrypt.js}"></script>
     <script th:src="@{/js/plugins/cookie.js}"></script>
+    <script th:src="@{/js/plugins/jquery-confirm.js}"></script>
+    <script th:src="@{/js/logView.js}"></script>
     <script type="text/javascript">
         var publicKey = null;
         $(document).ready(function () {
@@ -107,7 +105,7 @@
                         $("#submitBtn").removeAttr("disabled");
                     }
                     if(publicKey==null){
-                        alert("获取publicKey失败，请联系管理员！");
+                        logViewAlert("获取publicKey失败，请联系管理员！");
                         return;
                     }
                 }
@@ -150,52 +148,13 @@
                         if(data.retCode === '0000') {
                             window.location.href = getRootPath()+"/index";
                         }else {
-                            alert(data.retMsg);
+                            logViewAlert(data.retMsg);
                         }
                     }
                 });
             });
         });
 
-        //十六进制转字节
-        function hexToBytes(hex) {
-            for (var bytes = [], c = 0; c < hex.length; c += 2)
-                bytes.push(parseInt(hex.substr(c, 2), 16));
-            return bytes;
-        }
-
-        // 字节转十六进制
-        function bytesToHex(bytes) {
-            for (var hex = [], i = 0; i < bytes.length; i++) {
-                hex.push((bytes[i] >>> 4).toString(16));
-                hex.push((bytes[i] & 0xF).toString(16));
-            }
-            return hex.join("");
-        }
-
-        function getUrlParam (name) {
-            var reg = new RegExp('(^|&)' + name + '=(.*)(&[^&=]+=)');
-            var regLast = new RegExp('(^|&)' + name + '=(.*)($)');
-            var r = window.location.search.substr(1).match(reg) || window.location.search.substr(1).match(regLast);
-            if (r != null) {
-                var l = r[2].match(/&[^&=]+=/)
-                if (l) {
-                    return decodeURIComponent(r[2].split(l[0])[0]);
-                } else return decodeURIComponent(r[2]);
-            }
-            return '';
-        }
-        function getRootPath() {
-            var strFullPath = window.document.location.href;
-            var strPath = document.location.pathname;
-            if(strPath.lastIndexOf("/") != strPath.indexOf("/")) {
-                strPath = strPath.substring(0,strPath.lastIndexOf("/"));
-            }
-            var pos = strFullPath.indexOf(strPath);
-            var prePath = strFullPath.substring(0, pos);
-            // var postPath = strPath.substring(0,strPath.substring(1).indexOf("/")+1);
-            return prePath+strPath;
-        }
     </script>
 </body>
 </html>
