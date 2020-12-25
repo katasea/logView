@@ -13,6 +13,14 @@
 - [x] 8、简易部署，简易配置。<br>
 - [x] 9、RSA登录传输加密
 
+界面预览
+---------
+- 登录页面
+![avatar](./config/pro-image/logview-login.png)
+- 主页面
+![avatar](./config/pro-image/logview-index.png)
+- 日志查看
+![avatar](./config/pro-image/logview-detail.png)
 
 
 环境依赖
@@ -29,8 +37,7 @@ mvn package -Dmaven.test.skip=true
 - 拷贝config文件夹 并修改配置文件端口，可以不用改。
 - 拷贝app/target/lib  app/target/logview-app-*.jar.original
 - 写个脚本启动  java -jar logview-app-*.jar.original
-```jshelllanguage
-title 电子票据接口平台 
+```jshelllanguage  
 java -Xmx256M -Xms256M -jar -Dfile.encoding=gbk -Dloader.path=./config;./lib  logview-app-v1.0.0.jar.original
 ```
 - 访问 http://localhost:8000/logView
