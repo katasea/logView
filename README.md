@@ -21,7 +21,8 @@
 ![avatar](./config/pro-image/logview-index.png)
 - 日志查看
 ![avatar](./config/pro-image/logview-detail.png)
-
+- 在线命令
+![avatar](./config/pro-image/logview-shell.png)
 
 环境依赖
 ---------
@@ -40,7 +41,7 @@ mvn package -Dmaven.test.skip=true
 ```jshelllanguage  
 java -Xmx256M -Xms256M -jar -Dfile.encoding=gbk -Dloader.path=./config;./lib  logview-app-v1.0.0.jar.original
 ```
-- 访问 http://localhost:8000/logView
+- 访问 http://localhost:8000/logView  用户名密码配置在config/application-info.properties
 
 
 声明
