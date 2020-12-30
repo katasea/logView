@@ -25,6 +25,8 @@ public class FileServiceImpl implements FileService {
 	public List<FileBean> getFileList(RequestVO<Map<String,Object>> requestVO) throws PayBusinessException {
 		Map<String,Object> params = requestVO.getBizObj();
 		List<FileBean> childResult = new ArrayList<>();
+		List<FileBean> foldResult = new ArrayList<>();
+		List<FileBean> fileResult = new ArrayList<>();
 		if(params!=null && params.keySet().size()!=0) {
 			String parentDir = String.valueOf(params.get("parentDir"));
 			File[] childrends = null;
@@ -49,21 +51,25 @@ public class FileServiceImpl implements FileService {
 					fileBean.setTotalSpace(temp.getTotalSpace()/1024/1024);
 					fileBean.setFreeSpace(temp.getUsableSpace()/1024/1024);
 
+					fileBean.setModifyTime(String.valueOf(temp.lastModified()));
 					if (temp.isDirectory()) {    //判断元素是不是一个目录
 						fileBean.setType(0);
-						fileBean.setUsedSpace(String.valueOf(fileBean.getTotalSpace()-fileBean.getFreeSpace())+"MB");
+						fileBean.setUsedSpace(fileBean.getTotalSpace()-fileBean.getFreeSpace()+"MB");
+						foldResult.add(fileBean);
 					}else {
 						if(temp.length()/1024/1024 == 0) {
 
-							fileBean.setUsedSpace(String.valueOf(temp.length()/1024)+"KB");
+							fileBean.setUsedSpace(temp.length()/1024+"KB");
 						}else {
-							fileBean.setUsedSpace(String.valueOf(temp.length()/1024/1024)+"MB");
+							fileBean.setUsedSpace(temp.length()/1024/1024+"MB");
 						}
 						fileBean.setType(1);
+						fileResult.add(fileBean);
 					}
-					fileBean.setModifyTime(String.valueOf(temp.lastModified()));
-					childResult.add(fileBean);
 				}
+				//文件夹与文件分开
+				childResult.addAll(foldResult);
+				childResult.addAll(fileResult);
 			}else {
 				throw new PayBusinessException("未找到子目录信息，请确认路径是否正确！");
 			}

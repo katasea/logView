@@ -16,7 +16,6 @@
     <link type="text/css" th:href="@{/css/blk-design-system.css}" rel="stylesheet">
     <link type="text/css" th:href="@{/css/jquery-confirm.css}" rel="stylesheet">
     <link type="text/css" th:href="@{/demo/demo.css}" rel="stylesheet">
-    <!-- Optional: page related CSS-->
 </head>
 <body class="index-page">
 <!--    <nav class="navbar navbar-expand-lg fixed-top bg-info " >-->
@@ -96,7 +95,8 @@
                                 <i class="tim-icons icon-cloud-upload-94"></i>
                                 上传
                             </a>
-                            <a href="javascript:void(0)" class="btn btn-warning btn-sm btn-round shell">
+                            <a href="javascript:void(0)" class="btn btn-warning btn-sm btn-round shell"
+                               data-toggle="modal" data-target="#shellWindow">
                                 <i class="tim-icons icon-triangle-right-17"></i>
                                 命令
                             </a>
@@ -109,12 +109,41 @@
     </div>
 </div>
 <!-- Large modal -->
-
+<div class="modal fade modal-black modal-lg" id="shellWindow"  tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="height: 442px;">
+        <div class="modal-content" style="width: 800px;">
+            <div class="modal-body" >
+                <div class="col-sm-16" >
+                    <div id="text" style="background-color: #000;
+                        border-top: #ccc outset 2px;
+                        height: 420px;
+                        width:100%;
+                        overflow-y: scroll;">
+                        <ul id="contentUl" style=" margin: 0px; padding: 0px; list-style: none;">
+                            <li>提示，你可以执行以下命令启动java，警告：请不要输入不会自动结束的命令例如netstat  ping -t 等</li>
+                            <li>示例: E: & cd E:/a/b & start 1startup.bat</li>
+                            <li>示例: netstat -ano|findstr "11211" 或者linux的 netstat -ano|grep "11211"</li>
+                            <li>示例: taskkill -f -pid 112 或者linux kill -f -p 112 示例: tasklist |findstr "112" 或者linux ps -ef|grep "java"</li>
+                            <li>&nbsp;</li>
+                            <li>LogView Shell [版本 1.0.0.111] 点击下行开始输入 [点击空白区域关闭窗口] </li>
+                        </ul>
+                        <input type="text" name="" id='in' style="background-color: #000;
+                                        border: 0;
+                                        color: #00FF00;
+                                        font-weight: bold;
+                                        outline: none;
+                                        /*font-size:12px;*/
+                                        width: 100%">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade modal-black " id="myModal1" tabindex="-1" data-backdrop="static" role="dialog"
      aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-
-
         <div class="modal-content">
             <div class="modal-header justify-content-center">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
@@ -142,7 +171,8 @@
                 <!--                    </div>-->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-link btn-neutral file-upload-btn" onclick="fileUpload()">提交</button>
+                <button type="button" class="btn btn-link btn-neutral file-upload-btn" onclick="fileUpload()">提交
+                </button>
                 <button type="button" class="btn btn-link btn-neutral" data-dismiss="modal">取消</button>
             </div>
 
@@ -166,9 +196,14 @@
 <script type="text/javascript">
     var currentPath = getUrlParam("path");
     var filePath = '';
+    var commandIndex = 0;
+    var commandArr = new Array();
     $(function () {
+        //一开始默认加载根路径的目录
         getFilesDirectory(null, currentPath, 0);
+        //添加滚动区域
         $(".card-body").slimScroll({height: 440, wheelStep: 13});
+        //下载
         $(".download").click(function () {
             if (filePath.indexOf(".") !== -1) {
                 window.location.href = getRootPath() + "/file/download?path=" + filePath;
@@ -176,51 +211,111 @@
                 logViewAlert('当前选择不是一个文件，无法下载');
             }
         });
-        $(".shell").click(function () {
-            logViewAlert('等待实现');
+
+        //-----s-----------------------tart  shell 窗口脚本 -------------------------------//
+        $('#shellWindow').on('shown.bs.modal', function () {
+            $("#in")[0].focus();
+        })
+        $('#shellWindow').bind('keydown', function (event) {
+            if (event.keyCode === 13) {
+                if(commandArr[commandArr.length-1] != $("#in").val()) {
+                    commandArr.push($("#in").val());
+                }
+                $.ajax({
+                    type: "POST",
+                    url: getRootPath()+"/execute",
+                    data: "code=" + encodeURIComponent($("#in").val()),
+                    success: function (msg) {
+                        $("#contentUl").append("<li style='color:#00FF00;font-weight: bold;'>" + $("#in").val() + "</li>"); //将输入的输出到界面
+
+                        var content = msg.bizObj.replaceAll("\n", "</li><li>");
+                        content = content.replaceAll(" ","&nbsp;");
+
+                        $("#contentUl").append("<li>" + content + "</li>"); //获取返回值并输出
+
+                        $("#in").val(""); //清空输入框
+                        $('#text').scrollTop($("#text").scrollTop()+600);
+                    }
+                });
+            }else if(event.keyCode === 38) {
+                if(commandArr.length === 0) {
+                    return;
+                }
+                $("#in").val('');
+                commandIndex = commandIndex -1;
+                if(commandIndex < 0) {
+                    commandIndex = 0;
+                }
+                $("#in").val(commandArr[commandIndex]);
+            }else if(event.keyCode === 40) {
+                if(commandArr.length === 0) {
+                    return;
+                }
+                $("#in").val('');
+                commandIndex = commandIndex + 1;
+                if(commandIndex === commandArr.length) {
+                    commandIndex = commandArr.length-1;
+                }
+                $("#in").val(commandArr[commandIndex]);
+            }
         });
+        //----------------------------------end  shell 窗口脚本 ---------------------------//
 
     });
 
+    //文件浏览窗口 上一次点击的对象，用于处理单击变色
     var itemOfOld = null;
+
+
+    /**
+     * 文件上传
+     */
     function fileUpload() {
-        if(currentPath != '') {
+        if (currentPath != '') {
             // $(".file-upload-btn").attr("disabled",true);
 
             var formData = new FormData();
-            formData.append("file",$('#file')[0].files[0]);
+            formData.append("file", $('#file')[0].files[0]);
 
             formData.append("fileUrl", currentPath);
 
             $.ajax({
-                url:getRootPath()+'/file/upload',
-                type:'POST',
+                url: getRootPath() + '/file/upload',
+                type: 'POST',
                 async: false,
                 timeout: 30000000,
                 data: formData,
-                processData : false, // 使数据不做处理
-                contentType : false, // 不要设置Content-Type请求头
-                success: function(data){
+                processData: false, // 使数据不做处理
+                contentType: false, // 不要设置Content-Type请求头
+                success: function (data) {
                     // $(".file-upload-btn").attr("disabled",false);
-                    if(handlerResult(data)) {
+                    if (handlerResult(data)) {
                         $("#myModal1").modal('hide');
                         $('#file').val('');
                         logViewAlert("上传文件成功!");
-                        getFilesDirectory(null,currentPath,0);
+                        getFilesDirectory(null, currentPath, 0);
                     }
                 },
-                error:function(response){
+                error: function (response) {
                     console.log(response);
                 }
             });
-        }else {
+        } else {
             logViewAlert("当前空路径，不允许上传文件，请重新选择目录");
         }
 
 
     }
+
+    /**
+     * 获取文件目录
+     * @param item 当前点击的组件
+     * @param parentDir 父节点目录路径
+     * @param ftype 0 目录  1 文件
+     */
     function getFilesDirectory(item, parentDir, ftype) {
         var method = "file/service/getFileList/V1.0";
+        //临时变量记录，防止跟返回上级目录方法处理冲突。
         var paramPath = parentDir;
 
         if (paramPath !== '' && paramPath.indexOf("/") === -1) {
@@ -304,6 +399,7 @@
         }
     }
 
+    //退出登录
     function logout() {
         // 提交用户名和密码给后台
         $.ajax({
@@ -318,6 +414,7 @@
         });
     }
 
+    //返回上一级
     function goBackParent() {
         var tempPath = currentPath;
         if (tempPath.charAt(tempPath.length - 1) === '/') {
