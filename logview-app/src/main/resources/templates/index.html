@@ -359,9 +359,13 @@
                                         classStr2 = 'badge-success';
                                         fileTypeName = '文件';
                                         if (file.name.toUpperCase().indexOf(".LOG") != -1
+                                            || file.name.toUpperCase().indexOf(".HTML") != -1
+                                            || file.name.toUpperCase().indexOf(".JS") != -1
+                                            || file.name.toUpperCase().indexOf(".CSS") != -1
                                             || file.name.toUpperCase().indexOf(".XML") != -1
                                             || file.name.toUpperCase().indexOf(".TXT") != -1
                                             || file.name.toUpperCase().indexOf(".BAT") != -1
+                                            || file.name.toUpperCase().indexOf(".YML") != -1
                                             || file.name.toUpperCase().indexOf(".PROPERTIES") != -1
                                             || file.name.toUpperCase().indexOf(".SH") != -1) {
                                             actionContent = 'href="' + getRootPath() + '/view?path=' + file.dir + '"';
