@@ -121,9 +121,9 @@
                         width:100%;
                         overflow-y: scroll;">
                         <ul id="contentUl" style=" margin: 0px; padding: 0px; list-style: none;">
-                            <li>提示，你可以执行以下命令启动java，警告：请不要输入不会自动结束的命令例如netstat  ping -t 等</li>
-                            <li>示例: E: & cd E:/a/b & start 1startup.bat</li>
-                            <li>示例: netstat -ano|findstr "11211" 或者linux的 netstat -ano|grep "11211"</li>
+                            <li>提示，你可以执行以下命令启动java，警告：请不要输入不会自动结束的命令例如netstat  ping -t date等</li>
+                            <li>示例: E: & cd E:/a/b & start 1.bat</li>
+                            <li>示例: netstat -ano|findstr "80" 或者linux的 netstat -ano|grep "80"</li>
                             <li>示例: taskkill -f -pid 112 或者linux kill -f -p 112 示例: tasklist |findstr "112" 或者linux ps -ef|grep "java"</li>
                             <li>&nbsp;</li>
                             <li>LogView Shell [版本 1.0.0.111] 点击下行开始输入 [点击空白区域关闭窗口] </li>
@@ -215,7 +215,7 @@
         //-----s-----------------------tart  shell 窗口脚本 -------------------------------//
         $('#shellWindow').on('shown.bs.modal', function () {
             $("#in")[0].focus();
-        })
+        });
         $('#shellWindow').bind('keydown', function (event) {
             if (event.keyCode === 13) {
                 if(commandArr[commandArr.length-1] != $("#in").val()) {
@@ -234,7 +234,8 @@
                         $("#contentUl").append("<li>" + content + "</li>"); //获取返回值并输出
 
                         $("#in").val(""); //清空输入框
-                        $('#text').scrollTop($("#text").scrollTop()+600);
+                        $('#text').scrollTop($("#text").scrollTop()+1000);
+                        $("#in")[0].focus();
                     }
                 });
             }else if(event.keyCode === 38) {
@@ -244,7 +245,7 @@
                 $("#in").val('');
                 commandIndex = commandIndex -1;
                 if(commandIndex < 0) {
-                    commandIndex = 0;
+                    commandIndex = commandArr.length-1;
                 }
                 $("#in").val(commandArr[commandIndex]);
             }else if(event.keyCode === 40) {
@@ -254,7 +255,7 @@
                 $("#in").val('');
                 commandIndex = commandIndex + 1;
                 if(commandIndex === commandArr.length) {
-                    commandIndex = commandArr.length-1;
+                    commandIndex = 0;
                 }
                 $("#in").val(commandArr[commandIndex]);
             }

@@ -134,7 +134,7 @@ public class Log {
 			code = URLDecoder.decode(code,"utf-8");
 			log.info("开始执行命令{}",code);
 			String result = CommandUtil.executeWindows(code);
-			log.info("命令返回：{}",result);
+			log.info("命令执行完毕[{}]返回：{}",code,result);
 			responseVO.setBizObj(result);
 		} catch (Exception e) {
 			log.error("错误信息：{}",e.getMessage());

@@ -1,6 +1,7 @@
 package cn.katasea.main.service.util;
 
 import cn.katasea.util.CommonUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.util.Scanner;
@@ -9,15 +10,14 @@ import java.util.concurrent.TimeUnit;
  * @author katasea
  * 2020/12/29 14:01
  */
-
+@Slf4j
 public class CommandUtil {
-	private static Process proc = null;
 	public static String executeWindows(String cmd) throws IOException {
 		String result = "";
 		if(CommonUtil.isNotEmpty(cmd)) {
 			Process proc = null;
 			try {
-				proc = Runtime.getRuntime().exec("cmd.exe");
+				proc = Runtime.getRuntime().exec("cmd");
 			} catch (IOException e) {
 				e.printStackTrace();
 			} if (proc != null) {
@@ -27,21 +27,35 @@ public class CommandUtil {
 				if(cmdArr.length == 0) {
 					cmdArr = new String[]{cmd};
 				}
-				for(String cmdStr : cmdArr) {
-					out.println(cmdStr);
-				}
-				out.println("exit");
-				try { String line;
-					while ((line = in.readLine()) != null) {
-						System.out.println(line);
+
+				try {
+					boolean skip = false;
+					for(String cmdStr : cmdArr) {
+						out.println(cmdStr);
+						if(cmdStr.contains(".bat")) {
+							skip = true;
+							result = "正在后台执行启动命令，请稍候用netstat -ano 查看是否启动成功！";
+						}
+						if(cmdStr.contains("date")) {
+							throw new Exception("系统不支持执行阻塞性cmd语句");
+						}
+					}
+					out.println("exit");
+					String line;
+
+					while ((line = in.readLine()) != null && !skip) {
+						log.info("输出信息：{}",line);
 						result += line + "\n";
 					}
-					proc.waitFor();
+					proc.waitFor(3, TimeUnit.SECONDS);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					log.error("执行cmd脚本报错了，错误：{}",e.getMessage());
+				}finally {
 					in.close();
 					out.close();
 					proc.destroy();
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
 			}
 		}
@@ -55,7 +69,7 @@ public class CommandUtil {
 			process = Runtime.getRuntime().exec( new String[]{"bash","-c",command});
 			try {
 				//等待命令执行完成
-				process.waitFor(10, TimeUnit.SECONDS);
+				process.waitFor(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
